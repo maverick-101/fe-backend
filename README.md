@@ -1,8 +1,10 @@
 ##fe-backend
 
-#Run
+##Run Project:
+#Step1:
 	npm install
-	then
+	
+#Step2:
 	npm start
 
 Now Server is running at: http://localhost:3001 
