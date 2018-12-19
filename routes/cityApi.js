@@ -7,21 +7,43 @@ const City = require('../models/City')
 router.post("/city/save", async (req, res) => {
   let data = req.body
 	if (!data) {
-    debug.error("ERROR: No Data Found in City!")
-    res.send("ERROR: No Data Found in City!")
+    debug.error("ERROR: No Data found in req!")
+    res.send("ERROR: No Data found in req!")
 	}
-  const city = new City({
-    ID: data.ID,
-    province: req.body.province,
-    name: req.body.name,
-	  views: req.body.views
-  })
+  const city = new City(data)
   city.save().then(result => {
     debug.info('City Saved Result', result)
     res.send("City Saved!")
   })
   .catch(error => {
     debug.error("ERROR: Found in City!", error)
+    res.send(error)
+  })
+})
+
+// Updating Cities
+router.patch("/city/update", async (req, res) => {
+  let data = req.body
+	if (!data) {
+    debug.error("ERROR: No Data found in req!")
+    res.send("ERROR: No Data found in req!")
+	}
+  City.findOneAndUpdate({
+    ID: data.ID
+  },
+  data,
+  {upsert:false}
+  )
+  .then(result => {
+    debug.info('City Updated Result', result)
+    if(!result) {
+      debug.error("ERROR: Found in updating City!")
+      res.send("ERROR: updating City!")
+    }
+    res.send("City Updated!")
+  })
+  .catch(error => {
+    debug.error("ERROR: Found in updating City!", error)
     res.send(error)
   })
 })
@@ -43,6 +65,10 @@ router.get('/city/fetch', async(req, res) => {
 // fetching cities by ID
 router.get('/city/fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
+  if (!Id) {
+    debug.error("ERROR: No Id found in req!")
+    res.send("ERROR: No Id found in req!")
+  }
   City.find({ID: Id})
   .exec()
   .then(response => {
@@ -58,6 +84,10 @@ router.get('/city/fetchById/:Id', async(req, res) => {
 //fetching cities by Name
 router.get('/city/fetchByName/:name', async(req, res) => {
   let name = req.params.name
+  if (!name) {
+    debug.error("ERROR: No name found in req!")
+    res.send("ERROR: No name found in req!")
+  }
   City.find({name: name})
   .exec()
   .then(response => {

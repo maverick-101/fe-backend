@@ -9,20 +9,40 @@ router.post("/lcoationResources/save", async (req, res) => {
 		debug.error("ERROR: No Data Found in LocationResources!");
 		res.send("ERROR: No Data Found in LocationResources!")
 	}
-  const locationResources = new LocationResources({
-		ID: data.ID,
-		city_id: data.city_id,
-		location_id: data.location_id,
-		URL: data.URL,
-		status: data.status,
-		type: data.type
-  })
+  const locationResources = new LocationResources(data)
   locationResources.save().then(result => {
 		debug.info('locationResources Saved Result', result)
 		res.send("locationResources Saved!")
 	})
 	.catch(error => {
     debug.error("ERROR: Found in locationResources!", error)
+    res.send(error)
+  })
+})
+
+// Updating locationResources
+router.patch("/lcoationResources/update", async (req, res) => {
+  let data = req.body
+	if (!data) {
+    debug.error("ERROR: No Data found in req!")
+    res.send("ERROR: No Data found in req!")
+	}
+  LocationResources.findOneAndUpdate({
+    ID: data.ID
+  },
+  data,
+  {upsert:false}
+  )
+  .then(result => {
+    debug.info('locationResources Updated Result', result)
+    if(!result) {
+      debug.error("ERROR: Found in updating locationResources!")
+      res.send("ERROR: updating locationResources!")
+    }
+    res.send("locationResources Updated!")
+  })
+  .catch(error => {
+    debug.error("ERROR: Found in updating locationResources!", error)
     res.send(error)
   })
 })

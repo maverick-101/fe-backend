@@ -20,6 +20,33 @@ router.post("/locations/save", async (req, res) => {
   })
 })
 
+// Updating Locations
+router.patch("/locations/update", async (req, res) => {
+  let data = req.body
+	if (!data) {
+    debug.error("ERROR: No Data found in req!")
+    res.send("ERROR: No Data found in req!")
+	}
+  Locations.findOneAndUpdate({
+    ID: data.ID
+  },
+  data,
+  {upsert:false}
+  )
+  .then(result => {
+    debug.info('Locations Updated Result', result)
+    if(!result) {
+      debug.error("ERROR: Found in updating Locations!")
+      res.send("ERROR: updating Locations!")
+    }
+    res.send("Locations Updated!")
+  })
+  .catch(error => {
+    debug.error("ERROR: Found in updating Locations!", error)
+    res.send(error)
+  })
+})
+
 //fetching all locations
 router.get('/locations/fetch', async(req, res) => {
   Locations.find()
