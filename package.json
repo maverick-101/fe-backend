@@ -16,6 +16,8 @@
         "find": "^0.2.9",
         "lodash": "^4.17.10",
         "mongodb": "^2.2.35",
+        "mongoose": "^5.4.0",
+        "mongoose-auto-increment": "^5.0.1",
         "path": "^0.12.7",
         "request": "^2.87.0",
         "request-progress": "^3.0.0",

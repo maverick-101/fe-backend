@@ -5,6 +5,9 @@ const app = express()
 app.use(express.json())
 
 let routerList = [
+  './locationApi',
+  './cityApi',
+  './locationResourcesApi'
 ]
   
 for (let routerPath of routerList) {
