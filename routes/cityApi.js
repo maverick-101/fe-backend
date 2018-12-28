@@ -84,11 +84,30 @@ router.get('/city/fetchById/:Id', async(req, res) => {
 //fetching cities by Name
 router.get('/city/fetchByName/:name', async(req, res) => {
   let name = req.params.name
-  if (!name) {
+  if (!name ) {
     debug.error("ERROR: No name found in req!")
     res.send("ERROR: No name found in req!")
   }
   City.find({name: name})
+  .exec()
+  .then(response => {
+    debug.info('Cities: ', response)
+    res.json(response)
+  })
+  .catch(error => {
+    debug.error("No cities found", error)
+    res.send(error)
+  })
+})
+
+//fetching all cities by Province
+router.get('/city/fetchByProvince/:province', async(req, res) => {
+  let province = req.params.province
+  if (!province ) {
+    debug.error("ERROR: No province found in req!")
+    res.send("ERROR: No province found in req!")
+  }
+  City.find({province: province})
   .exec()
   .then(response => {
     debug.info('Cities: ', response)

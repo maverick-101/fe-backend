@@ -7,7 +7,8 @@ app.use(express.json())
 let routerList = [
   './locationApi',
   './cityApi',
-  './locationResourcesApi'
+  './locationResourcesApi',
+  './userApi'
 ]
   
 for (let routerPath of routerList) {
