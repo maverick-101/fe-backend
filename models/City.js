@@ -9,8 +9,7 @@ const citySchema = mongoose.Schema({
       unique:true
   	},
   province: {
-    type: String,
-    unique:true
+    type: String
 	}, 
   name: {
     type: String,
