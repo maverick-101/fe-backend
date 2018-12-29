@@ -22,6 +22,6 @@ const citySchema = mongoose.Schema({
 
 citySchema.index({ name: 1 }, {unique: true})
 
-// autoIncrement.initialize(mongoose.connection)
-// citySchema.plugin(autoIncrement.plugin, { model: 'Cities', field: 'ID' })
+autoIncrement.initialize(mongoose.connection)
+citySchema.plugin(autoIncrement.plugin, { model: 'Cities', field: 'ID' })
 module.exports = mongoose.model('Cities', citySchema)
