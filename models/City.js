@@ -19,7 +19,7 @@ const citySchema = mongoose.Schema({
 },
 { versionKey: false })
 
-citySchema.index({ name: 1 }, {unique: true})
+citySchema.index({ ID: 1 }, {unique: true})
 
 autoIncrement.initialize(mongoose.connection)
 citySchema.plugin(autoIncrement.plugin, { model: 'Cities', field: 'ID' })

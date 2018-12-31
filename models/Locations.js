@@ -11,14 +11,13 @@ let locationSchema  = new Schema({
   },
   city_id: Number,
   name: {
-    type: String,
-    unique:true
+    type: String
   }, 
   views: Number,
 },
 { versionKey: false })
 
-locationSchema.index({name: 1 }, {unique: true})
+locationSchema.index({ID: 1 }, {unique: true})
 
 autoIncrement.initialize(mongoose.connection)
 locationSchema.plugin(autoIncrement.plugin, { model: 'Locations', field: 'ID' })
