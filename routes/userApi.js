@@ -25,7 +25,7 @@ const parser = multer({ storage: storage })
 router.post("/user/save", parser.single("file"), async (req, res) => {
 	let file = req.file
 	debug.info(file)
-  let data = req.body
+  let data = req.body.user
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")
