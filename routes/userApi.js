@@ -24,7 +24,8 @@ const parser = multer({ storage: storage })
 // Saving User
 router.post("/user/save", parser.single("file"), async (req, res) => {
 	let file = req.file
-	debug.info(file)
+  debug.info(file)
+  debug.info(req.body)
   let data = req.body.user
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
@@ -98,7 +99,6 @@ router.patch("/user/update", async (req, res) => {
 
 // fetching all Users
 router.get('/user/fetch', async(req, res) => {
-	Cloudinary.uploadImage()
   User.find()
   .exec()
   .then(response => {
