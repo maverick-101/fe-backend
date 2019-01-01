@@ -2,7 +2,7 @@ const router = require('express').Router()
 let debug = require("debug-levels")("userApi")
 const User = require('../models/User')
 const AppConfig = require('../lib/AppConfig')
-// const Cloudinary = require('../lib/Cloudinary')
+const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
@@ -56,6 +56,19 @@ router.post("/user/save", parser.single("file"), async (req, res) => {
   })
 })
 
+//deleting User Image
+router.delete("/userImage/delete", async (req, res) => {
+  const profile_picture = req.body.profile_picture
+  if (!profile_picture) {
+    debug.error('ERROR: profile_picture is Undefined!', profile_picture)
+    res.send('ERROR: profile_picture is Undefined!')
+  }
+  let response = await CloudinaryLib.deleteImage(profile_picture)
+  res.send(response)
+})
+
+
+
 // Updating User
 router.patch("/user/update", async (req, res) => {
   let data = req.body
@@ -70,11 +83,11 @@ router.patch("/user/update", async (req, res) => {
   {upsert:false}
   )
   .then(result => {
-    debug.info('User Updated Result', result)
     if(!result) {
       debug.error("ERROR: Found in updating User!")
       res.send("ERROR: updating User!")
     }
+    debug.info('User Updated Result', result)
     res.send("User Updated!")
   })
   .catch(error => {
