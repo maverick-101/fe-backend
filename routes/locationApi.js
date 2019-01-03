@@ -35,7 +35,7 @@ router.post("/locations/save", parser.array("gallery"), async (req, res) => {
       gallery.push(pictureObject)
     })
   }
-	let data = JSON.parse(req.body.locations)
+	let data = JSON.parse(req.body.location)
 	if (!data) {
     debug.error("ERROR: No Data Found in Locations!")
     res.send("ERROR: No Data Found in Locations!")
