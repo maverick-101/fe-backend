@@ -57,7 +57,7 @@ router.patch("/locations/update", parser.array("gallery_images"), async (req, re
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
-  let data = JSON.parse(req.body.locations)
+  let data = JSON.parse(req.body.location)
   // let data = req.body   //for testing in postman
 	if (!data) {
     debug.error("ERROR: No Data found in req!")

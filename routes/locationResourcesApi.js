@@ -25,7 +25,7 @@ router.post("/lcoationResources/save", parser.array("gallery_images"), async (re
 	let cloudinaryData = req.files
   debug.info(cloudinaryData)
 	let gallery = []
-	let data = JSON.parse(req.body.city)
+	let data = JSON.parse(req.body.locationResources)
   if(cloudinaryData) {
     cloudinaryData.map(picture => {
       let pictureObject = {
