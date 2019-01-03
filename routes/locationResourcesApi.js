@@ -1,15 +1,53 @@
 const router = require('express').Router()
 let debug = require("debug-levels")("locationResourcesApi")
 const LocationResources = require('../models/LocationResources')
+const AppConfig = require('../lib/AppConfig')
+const CloudinaryLib = require('../lib/Cloudinary')
+const multer  = require('multer')
+const cloudinary = require('cloudinary')
+const cloudinaryStorage = require("multer-storage-cloudinary")
+
+cloudinary.config({ 
+  cloud_name: 'saaditrips', 
+  api_key: AppConfig.cloudinaryApi, 
+  api_secret: AppConfig.cloudinarySecret 
+})
+
+const storage = cloudinaryStorage({
+	cloudinary: cloudinary,
+	folder: "Location Resources",
+	allowedFormats: ["jpg", "png", "jpeg"],
+})
+const parser = multer({ storage: storage })
 
 // saving locationResources
-router.post("/lcoationResources/save", async (req, res) => {
-	let data = req.body
+router.post("/lcoationResources/save", parser.array("gallery_images"), async (req, res) => {
+	let cloudinaryData = req.files
+  debug.info(cloudinaryData)
+	let gallery = []
+	let data = JSON.parse(req.body.locationResources)
+  if(cloudinaryData) {
+    cloudinaryData.map(picture => {
+      let pictureObject = {
+        public_id: picture.public_id,
+				url: picture.url,
+				type: data.image_type
+      }
+      gallery.push(pictureObject)
+    })
+  }
 	if (!data) {
 		debug.error("ERROR: No Data Found in LocationResources!");
 		res.send("ERROR: No Data Found in LocationResources!")
 	}
-  const locationResources = new LocationResources(data)
+  const locationResources = new LocationResources({
+		location_id: data.location_id,
+		type: data.type,
+		city_id: data.city_id,
+		URL: data.URL,
+		status: data.status,
+		gallery: gallery
+	})
   locationResources.save().then(result => {
 		debug.info('locationResources Saved Result', result)
 		res.send("locationResources Saved!")
@@ -21,12 +59,34 @@ router.post("/lcoationResources/save", async (req, res) => {
 })
 
 // Updating locationResources
-router.patch("/lcoationResources/update", async (req, res) => {
-  let data = req.body
+router.patch("/lcoationResources/update", parser.array("gallery_images"), async (req, res) => {
+	let cloudinaryData = req.files
+  let gallery = []
+  debug.info(cloudinaryData)
+  let data = JSON.parse(req.body.locationResources)
+  // let data = req.body   //for testing in postman
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")
-	}
+  }
+  if(cloudinaryData) {
+    cloudinaryData.map(picture => {
+      let pictureObject = {
+        public_id: picture.public_id,
+        url: picture.url,
+        image_type: data.image_type
+      }
+      if (data.gallery) {
+        data.gallery.push(pictureObject) 
+      } else {
+        gallery.push(pictureObject)
+      }
+    })
+  }
+  if (!data.gallery) {
+    data.gallery = gallery
+  }
+  delete data.image_type
   LocationResources.findOneAndUpdate({
     ID: data.ID
   },

@@ -12,7 +12,14 @@ let locationSchema  = new Schema({
   city_id: Number,
   name: {
     type: String
-  }, 
+  },
+  gallery: [
+    {
+      public_id: String,
+      url: String,
+      image_type: String
+    }
+  ],
   views: Number,
 },
 { versionKey: false })

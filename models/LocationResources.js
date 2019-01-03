@@ -13,7 +13,14 @@ let locationResourcesSchema = new Schema({
   type: String,
   city_id: Number,
   URL: String,
-  status: String
+  status: String,
+  gallery: [
+    {
+      public_id: String,
+      url: String,
+      image_type: String
+    }
+  ]
 },
 { 
 	versionKey: false 

@@ -15,7 +15,14 @@ const citySchema = mongoose.Schema({
     type: String,
     unique:true
 	},
-  views: Number
+  views: Number,
+  gallery: [
+    {
+      public_id: String,
+      url: String,
+      image_type: String
+    }
+  ]
 },
 { versionKey: false })
 
