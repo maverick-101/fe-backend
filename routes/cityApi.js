@@ -22,11 +22,12 @@ const parser = multer({ storage: storage })
 
 
 // Saving Cities
-router.post("/city/save", parser.array("gallery"), async (req, res) => {
+router.post("/city/save", parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   debug.info(cloudinaryData)
   let gallery = []
-  if(cloudinaryData.length > 0 && cloudinaryData) {
+  let data = JSON.parse(req.body.city)
+  if(cloudinaryData) {
     cloudinaryData.map(picture => {
       let pictureObject = {
         public_id: picture.public_id,
@@ -36,7 +37,6 @@ router.post("/city/save", parser.array("gallery"), async (req, res) => {
       gallery.push(pictureObject)
     })
   }
-  let data = JSON.parse(req.body.city)
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")

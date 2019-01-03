@@ -24,8 +24,9 @@ const parser = multer({ storage: storage })
 router.post("/lcoationResources/save", parser.array("gallery"), async (req, res) => {
 	let cloudinaryData = req.files
   debug.info(cloudinaryData)
-  let gallery = []
-  if(cloudinaryData.length > 0 && cloudinaryData) {
+	let gallery = []
+	let data = JSON.parse(req.body.city)
+  if(cloudinaryData) {
     cloudinaryData.map(picture => {
       let pictureObject = {
         public_id: picture.public_id,
@@ -35,7 +36,6 @@ router.post("/lcoationResources/save", parser.array("gallery"), async (req, res)
       gallery.push(pictureObject)
     })
   }
-	let data = JSON.parse(req.body.locationResources)
 	if (!data) {
 		debug.error("ERROR: No Data Found in LocationResources!");
 		res.send("ERROR: No Data Found in LocationResources!")
@@ -59,7 +59,7 @@ router.post("/lcoationResources/save", parser.array("gallery"), async (req, res)
 })
 
 // Updating locationResources
-router.patch("/lcoationResources/update", parser.array("gallery"), async (req, res) => {
+router.patch("/lcoationResources/update", parser.array("gallery_images"), async (req, res) => {
 	let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)

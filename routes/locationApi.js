@@ -21,11 +21,12 @@ const storage = cloudinaryStorage({
 const parser = multer({ storage: storage })
 
 // saving locations
-router.post("/locations/save", parser.array("gallery"), async (req, res) => {
+router.post("/locations/save", parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   debug.info(cloudinaryData)
   let gallery = []
-  if(cloudinaryData.length > 0 && cloudinaryData) {
+  let data = JSON.parse(req.body.location)
+  if(cloudinaryData) {
     cloudinaryData.map(picture => {
       let pictureObject = {
         public_id: picture.public_id,
@@ -35,11 +36,11 @@ router.post("/locations/save", parser.array("gallery"), async (req, res) => {
       gallery.push(pictureObject)
     })
   }
-	let data = JSON.parse(req.body.location)
 	if (!data) {
     debug.error("ERROR: No Data Found in Locations!")
     res.send("ERROR: No Data Found in Locations!")
-	}
+  }
+  data.gallery = gallery
   const locations = new Locations(data)
   locations.save().then(result => {
     debug.info('Location Saved Result', result)
