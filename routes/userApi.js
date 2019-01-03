@@ -26,6 +26,7 @@ router.post("/user/save", parser.single("profile_picture"), async (req, res) => 
 	let profile_picture = req.file
   debug.info(profile_picture)
   let data = JSON.parse(req.body.user)
+  // let data = req.body  // for test on postman
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")
