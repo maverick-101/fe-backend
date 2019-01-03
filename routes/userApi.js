@@ -22,15 +22,14 @@ const parser = multer({ storage: storage })
 
 
 // Saving User
-router.post("/user/save", parser.single("file"), async (req, res) => {
-	let file = req.file
-  debug.info(file)
-  debug.info(req.body)
-  let data = req.body.user
+router.post("/user/save", parser.single("profile_picture"), async (req, res) => {
+	let profile_picture = req.file
+  debug.info(profile_picture)
+  let data = JSON.parse(req.body.user)
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")
-	}
+  }
   const user = new User({
 		first_name: data.first_name,
 		last_name: data.last_name,
@@ -39,8 +38,8 @@ router.post("/user/save", parser.single("file"), async (req, res) => {
 		phone: data.phone,
 		email: data.email,
 		profile_picture: {
-			public_id: file.public_id,
-			url: file.url
+			public_id: profile_picture.public_id,
+			url: profile_picture.url
 		},
 		address: data.address,
 		password: data.password,
@@ -71,12 +70,18 @@ router.delete("/userImage/delete", async (req, res) => {
 
 
 // Updating User
-router.patch("/user/update", async (req, res) => {
-  let data = req.body
+router.patch("/user/update", parser.single("profile_picture"), async (req, res) => {
+  let profile_picture = req.file
+  let data = JSON.parse(req.body.user)
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")
-	}
+  }
+  if (profile_picture) {
+    debug.info(profile_picture)
+    data.profile_picture.public_id = profile_picture.public_id
+    data.profile_picture.url = profile_picture.url
+  }
   User.findOneAndUpdate({
     ID: data.ID
   },

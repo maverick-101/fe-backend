@@ -1,16 +1,52 @@
 const router = require('express').Router()
 let debug = require("debug-levels")("cityApi")
 const City = require('../models/City')
+const AppConfig = require('../lib/AppConfig')
+const CloudinaryLib = require('../lib/Cloudinary')
+const multer  = require('multer')
+const cloudinary = require('cloudinary')
+const cloudinaryStorage = require("multer-storage-cloudinary")
+
+cloudinary.config({ 
+  cloud_name: 'saaditrips', 
+  api_key: AppConfig.cloudinaryApi, 
+  api_secret: AppConfig.cloudinarySecret 
+})
+
+const storage = cloudinaryStorage({
+	cloudinary: cloudinary,
+	folder: "Cities",
+	allowedFormats: ["jpg", "png", "jpeg"],
+})
+const parser = multer({ storage: storage })
 
 
 // Saving Cities
-router.post("/city/save", async (req, res) => {
-  let data = req.body
+router.post("/city/save", parser.array("gallery"), async (req, res) => {
+  let cloudinaryData = req.files
+  debug.info(cloudinaryData)
+  let gallery = []
+  if(cloudinaryData.length > 0 && cloudinaryData) {
+    cloudinaryData.map(picture => {
+      let pictureObject = {
+        public_id: picture.public_id,
+        url: picture.url,
+        type: data.image_type
+      }
+      gallery.push(pictureObject)
+    })
+  }
+  let data = JSON.parse(req.body.city)
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")
 	}
-  const city = new City(data)
+  const city = new City({
+    province: data.province,
+    name: data.name,
+    views: data.views,
+    gallery: gallery
+  })
   city.save().then(result => {
     debug.info('City Saved Result', result)
     res.send("City Saved!")
@@ -22,12 +58,34 @@ router.post("/city/save", async (req, res) => {
 })
 
 // Updating Cities
-router.patch("/city/update", async (req, res) => {
-  let data = req.body
+router.patch("/city/update", parser.array("gallery_images"), async (req, res) => {
+  let cloudinaryData = req.files
+  let gallery = []
+  debug.info(cloudinaryData)
+  let data = JSON.parse(req.body.city)
+  // let data = req.body   //for testing in postman
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")
-	}
+  }
+  if(cloudinaryData) {
+    cloudinaryData.map(picture => {
+      let pictureObject = {
+        public_id: picture.public_id,
+        url: picture.url,
+        image_type: data.image_type
+      }
+      if (data.gallery) {
+        data.gallery.push(pictureObject) 
+      } else {
+        gallery.push(pictureObject)
+      }
+    })
+  }
+  if (!data.gallery) {
+    data.gallery = gallery
+  }
+  delete data.image_type
   City.findOneAndUpdate({
     ID: data.ID
   },
@@ -37,8 +95,8 @@ router.patch("/city/update", async (req, res) => {
   .then(result => {
     debug.info('City Updated Result', result)
     if(!result) {
-      debug.error("ERROR: Found in updating City!")
-      res.send("ERROR: updating City!")
+      debug.error("No ID Found or ERROR: updating City!")
+      res.send("No ID Found or ERROR: updating City!")
     }
     res.send("City Updated!")
   })

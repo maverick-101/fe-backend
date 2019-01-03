@@ -1,10 +1,41 @@
 const router = require('express').Router()
 let debug = require("debug-levels")("locationApi")
 const Locations = require('../models/Locations')
+const AppConfig = require('../lib/AppConfig')
+const CloudinaryLib = require('../lib/Cloudinary')
+const multer  = require('multer')
+const cloudinary = require('cloudinary')
+const cloudinaryStorage = require("multer-storage-cloudinary")
+
+cloudinary.config({ 
+  cloud_name: 'saaditrips', 
+  api_key: AppConfig.cloudinaryApi, 
+  api_secret: AppConfig.cloudinarySecret 
+})
+
+const storage = cloudinaryStorage({
+	cloudinary: cloudinary,
+	folder: "Locations",
+	allowedFormats: ["jpg", "png", "jpeg"],
+})
+const parser = multer({ storage: storage })
 
 // saving locations
-router.post("/locations/save", async (req, res) => {
-  let data = req.body
+router.post("/locations/save", parser.array("gallery"), async (req, res) => {
+  let cloudinaryData = req.files
+  debug.info(cloudinaryData)
+  let gallery = []
+  if(cloudinaryData.length > 0 && cloudinaryData) {
+    cloudinaryData.map(picture => {
+      let pictureObject = {
+        public_id: picture.public_id,
+				url: picture.url,
+				type: data.image_type
+      }
+      gallery.push(pictureObject)
+    })
+  }
+	let data = JSON.parse(req.body.locations)
 	if (!data) {
     debug.error("ERROR: No Data Found in Locations!")
     res.send("ERROR: No Data Found in Locations!")
@@ -21,12 +52,34 @@ router.post("/locations/save", async (req, res) => {
 })
 
 // Updating Locations
-router.patch("/locations/update", async (req, res) => {
-  let data = req.body
+router.patch("/locations/update", parser.array("gallery"), async (req, res) => {
+  let cloudinaryData = req.files
+  let gallery = []
+  debug.info(cloudinaryData)
+  let data = JSON.parse(req.body.locations)
+  // let data = req.body   //for testing in postman
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")
-	}
+  }
+  if(cloudinaryData) {
+    cloudinaryData.map(picture => {
+      let pictureObject = {
+        public_id: picture.public_id,
+        url: picture.url,
+        image_type: data.image_type
+      }
+      if (data.gallery) {
+        data.gallery.push(pictureObject) 
+      } else {
+        gallery.push(pictureObject)
+      }
+    })
+  }
+  if (!data.gallery) {
+    data.gallery = gallery
+  }
+  delete data.image_type
   Locations.findOneAndUpdate({
     ID: data.ID
   },
