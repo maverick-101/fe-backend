@@ -53,7 +53,7 @@ router.post("/locations/save", parser.array("gallery_images"), async (req, res) 
 })
 
 // Updating Locations
-router.patch("/locations/update", parser.array("gallery"), async (req, res) => {
+router.patch("/locations/update", parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)

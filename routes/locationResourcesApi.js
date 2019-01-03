@@ -21,7 +21,7 @@ const storage = cloudinaryStorage({
 const parser = multer({ storage: storage })
 
 // saving locationResources
-router.post("/lcoationResources/save", parser.array("gallery"), async (req, res) => {
+router.post("/lcoationResources/save", parser.array("gallery_images"), async (req, res) => {
 	let cloudinaryData = req.files
   debug.info(cloudinaryData)
 	let gallery = []
