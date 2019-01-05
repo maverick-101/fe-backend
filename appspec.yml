@@ -3,7 +3,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/graana-api
+    destination: /home/ubuntu/saadiTrip-api
 hooks:
   BeforeInstall:
     - location: scripts/stop_server.sh
