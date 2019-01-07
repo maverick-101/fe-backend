@@ -1,6 +1,6 @@
 const router = require('express').Router()
-let debug = require("debug-levels")("locationApi")
-const Locations = require('../models/Locations')
+let debug = require("debug-levels")("roomApi")
+const Room = require('../models/Room')
 const AppConfig = require('../lib/AppConfig')
 const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
@@ -15,17 +15,17 @@ cloudinary.config({
 
 const storage = cloudinaryStorage({
 	cloudinary: cloudinary,
-	folder: "Locations",
+	folder: "Rooms",
 	allowedFormats: ["jpg", "png", "jpeg"],
 })
 const parser = multer({ storage: storage })
 
-// saving locations
-router.post("/locations/save", parser.array("gallery_images"), async (req, res) => {
+// saving Room
+router.post("/room/save", parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   debug.info(cloudinaryData)
   let gallery = []
-  let data = JSON.parse(req.body.location)
+  let data = JSON.parse(req.body.room)
   if(cloudinaryData) {
     cloudinaryData.map(picture => {
       let pictureObject = {
@@ -37,27 +37,27 @@ router.post("/locations/save", parser.array("gallery_images"), async (req, res) 
     })
   }
 	if (!data) {
-    debug.error("ERROR: No Data Found in Locations!")
-    res.send("ERROR: No Data Found in Locations!")
+    debug.error("ERROR: No Data Found in Room!")
+    res.send("ERROR: No Data Found in Room!")
   }
   data.gallery = gallery
-  const locations = new Locations(data)
-  locations.save().then(result => {
-    debug.info('Location Saved Result', result)
-    res.send("Location Saved!")
+  const rooms = new Room(data)
+  rooms.save().then(result => {
+    debug.info('Room Saved Result', result)
+    res.send("Room Saved!")
   })
   .catch(error => {
-    debug.error("ERROR: Found in Locations!", error)
+    debug.error("ERROR: Found in Room!", error)
     res.send(error)
   })
 })
 
-// Updating Locations
-router.patch("/locations/update", parser.array("gallery_images"), async (req, res) => {
+// Updating Room
+router.patch("/room/update", parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
-  let data = JSON.parse(req.body.location)
+  let data = JSON.parse(req.body.room)
   // let data = req.body   //for testing in postman
 	if (!data) {
     debug.error("ERROR: No Data found in req!")
@@ -81,66 +81,66 @@ router.patch("/locations/update", parser.array("gallery_images"), async (req, re
     data.gallery = gallery
   }
   delete data.image_type
-  Locations.findOneAndUpdate({
+  Room.findOneAndUpdate({
     ID: data.ID
   },
   data,
   {upsert:false}
   )
   .then(result => {
-    debug.info('Locations Updated Result', result)
+    debug.info('Room Updated Result', result)
     if(!result) {
-      debug.error("ERROR: Found in updating Locations!")
-      res.send("ERROR: updating Locations!")
+      debug.error("ERROR: Found in updating Room!")
+      res.send("ERROR: updating Room!")
     }
-    res.send("Locations Updated!")
+    res.send("Room Updated!")
   })
   .catch(error => {
-    debug.error("ERROR: Found in updating Locations!", error)
+    debug.error("ERROR: Found in updating Room!", error)
     res.send(error)
   })
 })
 
-//fetching all locations
-router.get('/locations/fetch', async(req, res) => {
-  Locations.find()
+//fetching all Room
+router.get('/room/fetch', async(req, res) => {
+  Room.find()
   .exec()
   .then(response => {
-    debug.info('locations: ', response)
+    debug.info('Rooms: ', response)
     res.json(response)
   })
   .catch(error => {
-    debug.error("No locations found", error)
+    debug.error("No Rooms found", error)
     res.send(error)
   })
 })
 
-// fetching locations by ID
-router.get('/locations/fetchById/:Id', async(req, res) => {
+// fetching Room by ID
+router.get('/room/fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
-  Locations.find({ID: Id})
+  Room.find({ID: Id})
   .exec()
   .then(response => {
-    debug.info('locations: ', response)
+    debug.info('Room: ', response)
     res.json(response)
   })
   .catch(error => {
-    debug.error("No locations found", error)
+    debug.error("No Room found", error)
     res.send(error)
   })
 })
 
-//fetching locations by Name
-router.get('/locations/fetchByName/:name', async(req, res) => {
-  let name = req.params.name
-  Locations.find({name: name})
+//fetching Room by Name
+router.get('/room/fetchByName/:title', async(req, res) => {
+  let title = req.params.title
+  Room.find({title: title})
   .exec()
   .then(response => {
-    debug.info('locations: ', response)
+    debug.info('Room: ', response)
     res.json(response)
   })
   .catch(error => {
-    debug.error("No locations found", error)
+    debug.error("No Room found", error)
     res.send(error)
   })
 })
