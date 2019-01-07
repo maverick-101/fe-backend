@@ -27,6 +27,7 @@ router.post("/city/save", parser.array("gallery_images"), async (req, res) => {
   debug.info(cloudinaryData)
   let gallery = []
   let data = JSON.parse(req.body.city)
+  // let data = req.body  // for test on Postman
   if(cloudinaryData) {
     cloudinaryData.map(picture => {
       let pictureObject = {

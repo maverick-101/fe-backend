@@ -6,6 +6,7 @@ const hotelSchema = mongoose.Schema({
       type: Number,
       unique: true
     },
+    name: String,
     location_id: Number,
     city_id: Number,
     user_id: Number,
@@ -18,7 +19,6 @@ const hotelSchema = mongoose.Schema({
       }
     ],
     stars: Number,
-    logo: String,
     url: String,
     pets_allowed: Boolean,
     smoking_allowed: Boolean,
