@@ -130,8 +130,8 @@ router.get('/room/fetchById/:Id', async(req, res) => {
   })
 })
 
-//fetching Room by Name
-router.get('/room/fetchByName/:title', async(req, res) => {
+//fetching Room by title
+router.get('/room/fetchByTitle/:title', async(req, res) => {
   let title = req.params.title
   Room.find({title: title})
   .exec()

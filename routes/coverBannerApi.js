@@ -118,71 +118,14 @@ router.get('/coverbanner/fetchById/:Id', async(req, res) => {
   })
 })
 
-//fetching User by First Name
-router.get('/coverbanner/fetchByFirstName/:first_name', async(req, res) => {
-  let first_name = req.params.first_name
-  if (!first_name ) {
-    debug.error("ERROR: No first_name found in req!")
-    res.send("ERROR: No first_name found in req!")
-  }
-  User.find({first_name: first_name})
-  .exec()
-  .then(response => {
-    debug.info('User: ', response)
-    res.json(response)
-  })
-  .catch(error => {
-    debug.error("No User found", error)
-    res.send(error)
-  })
-})
-
-//fetching User by Email
-router.get('/coverbanner/fetchByEmail/:email', async(req, res) => {
-  let email = req.params.email
-  if (!email ) {
+//fetching User by hotel ID
+router.get('/coverbanner/fetchByHotelId/:hotel_Id', async(req, res) => {
+  let hotel_Id = req.params.hotel_Id
+  if (!hotel_Id ) {
     debug.error("ERROR: No email found in req!")
     res.send("ERROR: No email found in req!")
   }
-  User.find({email: email})
-  .exec()
-  .then(response => {
-    debug.info('User: ', response)
-    res.json(response)
-  })
-  .catch(error => {
-    debug.error("No User found", error)
-    res.send(error)
-  })
-})
-
-//fetching User by Phone
-router.get('/coverbanner/fetchByPhone/:phone', async(req, res) => {
-  let phone = req.params.phone
-  if (!phone ) {
-    debug.error("ERROR: No phone found in req!")
-    res.send("ERROR: No phone found in req!")
-  }
-  User.find({phone: phone})
-  .exec()
-  .then(response => {
-    debug.info('User: ', response)
-    res.json(response)
-  })
-  .catch(error => {
-    debug.error("No User found", error)
-    res.send(error)
-  })
-})
-
-//fetching all Users by City
-router.get('/coverbanner/fetchByCity/:city_id', async(req, res) => {
-  let city_id = req.params.city_id
-  if (!city_id ) {
-    debug.error("ERROR: No city_id found in req!")
-    res.send("ERROR: No city_id found in req!")
-  }
-  User.find({city_id: city_id})
+  User.find({hotel_id: hotel_Id})
   .exec()
   .then(response => {
     debug.info('User: ', response)

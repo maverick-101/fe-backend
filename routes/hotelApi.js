@@ -133,14 +133,44 @@ router.get('/hotel/fetchById/:Id', async(req, res) => {
 //fetching hotels by Name
 router.get('/hotel/fetchByName/:name', async(req, res) => {
   let name = req.params.name
-  Locations.find({name: name})
+  Hotel.find({name: name})
   .exec()
   .then(response => {
-    debug.info('locations: ', response)
+    debug.info('Hotel: ', response)
     res.json(response)
   })
   .catch(error => {
-    debug.error("No locations found", error)
+    debug.error("No Hotel found", error)
+    res.send(error)
+  })
+})
+
+//fetching hotels by email
+router.get('/hotel/fetchByEmail/:email', async(req, res) => {
+  let email = req.params.email
+  Hotel.find({email: email})
+  .exec()
+  .then(response => {
+    debug.info('Hotel: ', response)
+    res.json(response)
+  })
+  .catch(error => {
+    debug.error("No Hotel found", error)
+    res.send(error)
+  })
+})
+
+//fetching hotels by phone
+router.get('/hotel/fetchByPhone/:phone', async(req, res) => {
+  let phone = req.params.phone
+  Hotel.find({phone: phone})
+  .exec()
+  .then(response => {
+    debug.info('Hotel: ', response)
+    res.json(response)
+  })
+  .catch(error => {
+    debug.error("No Hotel found", error)
     res.send(error)
   })
 })
