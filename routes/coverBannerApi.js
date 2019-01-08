@@ -65,7 +65,7 @@ router.patch("/coverbanner/update", parser.single("image"), async (req, res) => 
     imageData.url = image.url
   }
   data.image = imageData
-  User.findOneAndUpdate({
+  CoverBanner.findOneAndUpdate({
     ID: data.ID
   },
   data,
@@ -74,7 +74,7 @@ router.patch("/coverbanner/update", parser.single("image"), async (req, res) => 
   .then(result => {
     if(!result) {
       debug.error("ERROR: Found in updating CoverBanner!")
-      res.send("ERROR: updating User!")
+      res.send("ERROR: updating CoverBanner!")
     }
     debug.info('CoverBanner Updated Result', result)
     res.send("CoverBanner Updated!")
@@ -85,7 +85,7 @@ router.patch("/coverbanner/update", parser.single("image"), async (req, res) => 
   })
 })
 
-// fetching all Users
+// fetching all CoverBanner
 router.get('/coverbanner/fetch', async(req, res) => {
   CoverBanner.find()
   .exec()
@@ -99,7 +99,7 @@ router.get('/coverbanner/fetch', async(req, res) => {
   })
 })
 
-// fetching User by ID
+// fetching CoverBanner by ID
 router.get('/coverbanner/fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
   if (!Id) {
@@ -118,21 +118,21 @@ router.get('/coverbanner/fetchById/:Id', async(req, res) => {
   })
 })
 
-//fetching User by hotel ID
+//fetching CoverBanner by hotel ID
 router.get('/coverbanner/fetchByHotelId/:hotel_Id', async(req, res) => {
   let hotel_Id = req.params.hotel_Id
   if (!hotel_Id ) {
     debug.error("ERROR: No email found in req!")
     res.send("ERROR: No email found in req!")
   }
-  User.find({hotel_id: hotel_Id})
+  CoverBanner.find({hotel_id: hotel_Id})
   .exec()
   .then(response => {
-    debug.info('User: ', response)
+    debug.info('CoverBanner: ', response)
     res.json(response)
   })
   .catch(error => {
-    debug.error("No User found", error)
+    debug.error("No CoverBanner found", error)
     res.send(error)
   })
 })
