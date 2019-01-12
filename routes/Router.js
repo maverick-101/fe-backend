@@ -8,7 +8,10 @@ let routerList = [
   './locationApi',
   './cityApi',
   './locationResourcesApi',
-  './userApi'
+  './userApi',
+  './roomApi',
+  './hotelApi',
+  './coverBannerApi'
 ]
   
 for (let routerPath of routerList) {
