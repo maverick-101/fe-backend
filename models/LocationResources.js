@@ -28,6 +28,6 @@ let locationResourcesSchema = new Schema({
 
 locationResourcesSchema.index({ ID: 1 }, {unique: true})
 
-// autoIncrement.initialize(mongoose.connection)
-// locationResourcesSchema.plugin(autoIncrement.plugin, { model: 'Location_Resources', field: 'ID' })
+autoIncrement.initialize(mongoose.connection)
+locationResourcesSchema.plugin(autoIncrement.plugin, { model: 'Location_Resources', field: 'ID' })
 module.exports = mongoose.model('Location_Resources', locationResourcesSchema)
