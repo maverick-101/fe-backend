@@ -122,11 +122,25 @@ router.get('/lcoationResources/fetch', async(req, res) => {
 	})
 })
 
-//fetching location resources By ID
-router.get('/lcoationResources/fetchById/:Id', async(req, res) => {
-	let Id = req.params.Id
+//fetching all location resources
+router.get('/lcoationResources/fetch', async(req, res) => {
+	LocationResources.find()
+	.exec()
+	.then(response => {
+	  debug.info('LocationResources: ', response)
+	  res.json(response)
+	})
+	.catch(error => {
+	  debug.error("No LocationResources found", error)
+	  res.send(error)
+	})
+})
+
+//fetching all locationresources By location_id
+router.get('/lcoationResources/fetchByLocationId/:location_id', async(req, res) => {
+	let location_id = req.params.location_id
 	LocationResources.find({ 
-		ID: Id,
+		location_id: location_id,
 	})
 	.exec()
 	.then(response => {
