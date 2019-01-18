@@ -8,7 +8,7 @@ const ModelUtils = require('./models/ModelUtils')
 require('dotenv').config()
 
 // basic
-const DbConn = require('./lib/Config')
+const DbConn = require('./lib/DbConn')
 
 const app = require("./routes/Router")
 
