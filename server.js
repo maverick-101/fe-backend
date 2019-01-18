@@ -4,6 +4,8 @@ const path = require('path')
 const express = require('express')
 const ModelUtils = require('./models/ModelUtils')
 
+// require .env
+require('dotenv').config()
 
 // basic
 const DbConn = require('./lib/Config')
