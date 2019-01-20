@@ -11,7 +11,9 @@ let routerList = [
   './userApi',
   './roomApi',
   './hotelApi',
-  './coverBannerApi'
+  './coverBannerApi',
+  'packagePageApi',
+  'agentPageApi.js'
 ]
   
 for (let routerPath of routerList) {

@@ -3,6 +3,7 @@ let debug = require("debug-levels")("userApi")
 const User = require('../models/User')
 const AppConfig = require('../lib/AppConfig')
 const CloudinaryLib = require('../lib/Cloudinary')
+const UserLib = require('../lib/UserLib')
 const multer  = require('multer')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
@@ -59,13 +60,36 @@ router.post("/user/save", parser.single("profile_picture"), async (req, res) => 
 
 //deleting User Image
 router.delete("/userImage/delete", async (req, res) => {
-  const profile_picture = req.body.profile_picture
-  if (!profile_picture) {
-    debug.error('ERROR: profile_picture is Undefined!', profile_picture)
-    res.send('ERROR: profile_picture is Undefined!')
+  let response
+  const data = req.body
+  if (!data) {
+    debug.error('ERROR: user is Undefined!', data)
+    res.status(500).send('ERROR: user is Undefined!')
   }
-  let response = await CloudinaryLib.deleteImage(profile_picture)
-  res.send(response)
+  let ID = data.ID
+  let profile_picture = data.profile_picture
+
+  let user = await UserLib.findUserById(data)
+  debug.info(user)
+  if(user) {
+    response = await CloudinaryLib.deleteImage(user, profile_picture)
+  } else {
+    res.status(500).send('ERROR: Finding User!')
+  }
+  debug.info('Response: ', response)
+  if (response) {
+    let newUser
+    newUser = user[0]
+    delete user[0].profile_picture
+    let reply = await UserLib.updateUser(user[0])
+    if (reply) {
+      res.status(200).send("Image Deleted! Both in Database And Cloudinary And User Updated!")
+    } else {
+      res.status(500).send("ERROR: Can't Update User after Deleting Image from Cloudinary!")
+    }
+  } else {
+    res.status(500).send('ERROR: Deleting Picture in Cloudinary!!')
+  }
 })
 
 
@@ -83,24 +107,12 @@ router.patch("/user/update", parser.single("profile_picture"), async (req, res) 
     data.profile_picture.public_id = profile_picture.public_id
     data.profile_picture.url = profile_picture.url
   }
-  User.findOneAndUpdate({
-    ID: data.ID
-  },
-  data,
-  {upsert:false}
-  )
-  .then(result => {
-    if(!result) {
-      debug.error("ERROR: Found in updating User!")
-      res.send("ERROR: updating User!")
-    }
-    debug.info('User Updated Result', result)
+  let response = UserLib.updateUser(data)
+  if (response) {
     res.send("User Updated!")
-  })
-  .catch(error => {
-    debug.error("ERROR: Found in updating User!", error)
-    res.send(error)
-  })
+  } else {
+    res.send("ERROR: Can't Update User!")
+  }
 })
 
 // fetching all Users
