@@ -34,14 +34,14 @@ const packagePageSchema = mongoose.Schema({
   ],
   activities: [
     {
-      type: String,
+      activity_type: String,
       description: String,
       status: Boolean
     }
   ],  
   food: [
     {
-      type: String,
+      food_type: String,
       description: String,
       start_time: String,
       end_time: String,

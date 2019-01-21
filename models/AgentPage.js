@@ -9,7 +9,7 @@ const AgentPageSchema = mongoose.Schema({
   video_link: String,
   addresses: [
     {
-      type: String,
+      address_type: String,
       primary: Boolean,
       location_id: Number,
       city_id: Number,

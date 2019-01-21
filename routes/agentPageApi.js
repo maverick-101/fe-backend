@@ -26,6 +26,7 @@ router.post("/agentPage/save", parser.array("gallery_images"), async (req, res) 
   debug.info(cloudinaryData)
   let gallery = []
   let data = JSON.parse(req.body.agentPage)
+  // let data = req.body // for testing on postman
   if(cloudinaryData) {
     cloudinaryData.map(picture => {
       let pictureObject = {
