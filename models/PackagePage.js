@@ -5,11 +5,11 @@ const packagePageSchema = mongoose.Schema({
   ID: Number,
   agent_id: Number, 
   city_id: Number, 
-  location_id: Number, 
+  location_id: Number,
+  package_title: String,
   price: [
     {
       person: String,
-      package_title: String,
       wifi: Boolean,
       shuttle_service: Boolean,
       breakfast: Boolean,
