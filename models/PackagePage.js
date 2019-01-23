@@ -3,9 +3,9 @@ const autoIncrement = require('mongoose-auto-increment')
 
 const packagePageSchema = mongoose.Schema({
   ID: Number,
-  agent_id: String, 
-  city_id: String, 
-  location_id: String, 
+  agent_id: Number, 
+  city_id: Number, 
+  location_id: Number, 
   price: [
     {
       person: String,
