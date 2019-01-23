@@ -37,7 +37,7 @@ router.post("/save/city-save", parser.array("gallery_images"), async (req, res) 
   data.gallery = gallery
   let reply = await CityLib.saveCity(data)
   if (reply) {
-    res.status(200).send('User Saved!')
+    res.status(200).send('City Saved!')
   } else {
     res.status(500).send('ERROR: Duplicate Field Found or Error Saving City!')
   }
