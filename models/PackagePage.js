@@ -3,27 +3,27 @@ const autoIncrement = require('mongoose-auto-increment')
 
 const packagePageSchema = mongoose.Schema({
   ID: Number,
-  agent_id: Number, 
-  city_id: Number, 
-  location_id: Number, 
+  agent_id: String, 
+  city_id: String, 
+  location_id: String, 
   price: [
     {
-      person: Number,
+      person: String,
       package_title: String,
       wifi: Boolean,
       shuttle_service: Boolean,
       breakfast: Boolean,
       buffet: Boolean,
       dinner: Boolean,
-      nights_stay: Number,
-      price: Number,
+      nights_stay: String,
+      price: String,
       description: String,
     }
   ],
   description: String, 
   travel_modes: [
     {
-      route: Number,
+      route: String,
       departure: String,
       destination: String,
       travel_time: String,
@@ -57,7 +57,7 @@ const packagePageSchema = mongoose.Schema({
   ], 
   latitude: String,
   longitude: String,
-  rating: Number
+  rating: String
 },
 { versionKey: false })
 
