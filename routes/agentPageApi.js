@@ -26,8 +26,8 @@ router.post("/save/agentPage-save", parser.array("gallery_images"), async (req, 
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
-  // let data = JSON.parse(req.body.agentPage)
-  let data = req.body  // for test on Postman
+  let data = JSON.parse(req.body.agentPage)
+  // let data = req.body  // for test on Postman
 	if (!data) {
     debug.error("ERROR: No Data found in request!")
     res.status(500).send("ERROR: No Data found in request!")
