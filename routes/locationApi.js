@@ -1,6 +1,7 @@
 const router = require('express').Router()
 let debug = require("debug-levels")("locationApi")
 const Locations = require('../models/Locations')
+const LocationLib = require('../lib/LocationLib')
 const AppConfig = require('../lib/AppConfig')
 const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
@@ -8,7 +9,7 @@ const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
 
 cloudinary.config({ 
-  cloud_name: 'saaditrips', 
+  cloud_name: AppConfig.cloudinaryName, 
   api_key: AppConfig.cloudinaryApi, 
   api_secret: AppConfig.cloudinarySecret 
 })
@@ -21,128 +22,116 @@ const storage = cloudinaryStorage({
 const parser = multer({ storage: storage })
 
 // saving locations
-router.post("/locations/save", parser.array("gallery_images"), async (req, res) => {
+router.post("/save/location-save", parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
-  debug.info(cloudinaryData)
   let gallery = []
+  debug.info(cloudinaryData)
   let data = JSON.parse(req.body.location)
-  if(cloudinaryData) {
-    cloudinaryData.map(picture => {
-      let pictureObject = {
-        public_id: picture.public_id,
-				url: picture.url,
-				type: data.image_type
-      }
-      gallery.push(pictureObject)
-    })
-  }
+  // let data = req.body  // for test on Postman
 	if (!data) {
-    debug.error("ERROR: No Data Found in Locations!")
-    res.send("ERROR: No Data Found in Locations!")
+    debug.error("ERROR: No Data found in location request!")
+    res.status(500).send("ERROR: No Data found in location request!")
   }
+  gallery = await CloudinaryLib.createGallery(data, cloudinaryData)
   data.gallery = gallery
-  const locations = new Locations(data)
-  locations.save().then(result => {
-    debug.info('Location Saved Result', result)
-    res.send("Location Saved!")
-  })
-  .catch(error => {
-    debug.error("ERROR: Found in Locations!", error)
-    res.send(error)
-  })
+  let reply = await LocationLib.saveLocation(data)
+  if (reply) {
+    res.status(200).send('location Saved!')
+  } else {
+    res.status(500).send('ERROR: Duplicate Field Found OR Error Saving location!')
+  }
 })
 
 // Updating Locations
-router.patch("/locations/update", parser.array("gallery_images"), async (req, res) => {
+router.patch("/update/location-update", parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
   let data = JSON.parse(req.body.location)
   // let data = req.body   //for testing in postman
 	if (!data) {
-    debug.error("ERROR: No Data found in req!")
-    res.send("ERROR: No Data found in req!")
+    debug.error("ERROR: No Data found in location request!")
+    res.status(500).send("ERROR: No Data found in location request!")
   }
-  if(cloudinaryData) {
-    cloudinaryData.map(picture => {
-      let pictureObject = {
-        public_id: picture.public_id,
-        url: picture.url,
-        image_type: data.image_type
-      }
-      if (data.gallery) {
-        data.gallery.push(pictureObject) 
-      } else {
-        gallery.push(pictureObject)
-      }
-    })
-  }
-  if (!data.gallery) {
-    data.gallery = gallery
-  }
+  gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
+  data.gallery = gallery
   delete data.image_type
-  Locations.findOneAndUpdate({
-    ID: data.ID
-  },
-  data,
-  {upsert:false}
-  )
-  .then(result => {
-    debug.info('Locations Updated Result', result)
-    if(!result) {
-      debug.error("ERROR: Found in updating Locations!")
-      res.send("ERROR: updating Locations!")
-    }
-    res.send("Locations Updated!")
-  })
-  .catch(error => {
-    debug.error("ERROR: Found in updating Locations!", error)
-    res.send(error)
-  })
+  let reply = await LocationLib.updateLocation(data)
+  if (reply) {
+    res.status(200).send('location Updated!')
+  } else {
+    res.status(500).send('ERROR: No ID Found or Error Updating location!')
+  }
 })
 
 //fetching all locations
-router.get('/locations/fetch', async(req, res) => {
-  Locations.find()
-  .exec()
-  .then(response => {
-    debug.info('locations: ', response)
-    res.json(response)
-  })
-  .catch(error => {
-    debug.error("No locations found", error)
-    res.send(error)
-  })
+router.get('/fetch/locations-fetch', async(req, res) => {
+  let reply = await LocationLib.fetchAllLocations()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No location Found Or Error Fetching locations!')
+  }
 })
 
 // fetching locations by ID
-router.get('/locations/fetchById/:Id', async(req, res) => {
+router.get('/fetchById/location-fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
-  Locations.find({ID: Id})
-  .exec()
-  .then(response => {
-    debug.info('locations: ', response)
-    res.json(response)
-  })
-  .catch(error => {
-    debug.error("No locations found", error)
-    res.send(error)
-  })
+  if (!Id) {
+    debug.error("ERROR: No ID found in location request!")
+    res.status(500).send("ERROR: No ID found in location request!")
+  }
+  let reply = await LocationLib.findLocationById(Id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No location Found Or Error Fetching location By ID!')
+  }
 })
 
 //fetching locations by Name
-router.get('/locations/fetchByName/:name', async(req, res) => {
+router.get('/fetchByName/location-fetchByName/:name', async(req, res) => {
   let name = req.params.name
-  Locations.find({name: name})
-  .exec()
-  .then(response => {
-    debug.info('locations: ', response)
-    res.json(response)
-  })
-  .catch(error => {
-    debug.error("No locations found", error)
-    res.send(error)
-  })
+  if (!name ) {
+    debug.error("ERROR: No name found in location request!")
+    res.status(500).send("ERROR: No name found in location request!")
+  }
+  let reply = await LocationLib.findLocationByName(name)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No location Found Or Error Fetching location By Name!')
+  }
+})
+
+//fetching location by City_id
+router.get('/fetchByCity/location-fetchByCity/:city_id', async(req, res) => {
+  let city_id = req.params.city_id
+  if (!city_id ) {
+    debug.error("ERROR: No name found in location request!")
+    res.status(500).send("ERROR: No name found in location request!")
+  }
+  let reply = await LocationLib.findLocationByCity_id(city_id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No location Found Or Error Fetching location By City_id!')
+  }
+})
+
+//Delete Location by ID 
+router.delete('/delete/location-deleteById/:Id', async(req, res) => {
+  let Id = req.params.Id
+  if (!Id) {
+    debug.error("ERROR: No ID found in location request!")
+    res.status(500).send("ERROR: No ID found in location request!")
+  }
+  let reply = await LocationLib.deleteLocationById(Id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No location Found Or Error Deleting location!')
+  }
 })
 
 module.exports = router
