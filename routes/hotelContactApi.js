@@ -2,6 +2,7 @@ const router = require('express').Router()
 let debug = require("debug-levels")("hotelContactApi")
 const HotelContact = require('../models/HotelContact')
 const hotelContactLib = require('../lib/HotelContactLib')
+const nodeMailer = require('../lib/NodeMailer')
 
 
 // Saving hotelContact
@@ -38,6 +39,7 @@ router.patch("/update/hotelContact-update", async (req, res) => {
 
 // fetching all hotelContact
 router.get('/fetch/hotelContact-fetch', async(req, res) => {
+  await nodeMailer.sendEmail()
   let reply = await hotelContactLib.fetchAllHotelContacts()
   if (reply) {
     res.status(200).send(reply)
