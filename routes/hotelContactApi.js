@@ -8,6 +8,7 @@ const nodeMailer = require('../lib/NodeMailer')
 // Saving hotelContact
 router.post("/save/hotelContact-save", async (req, res) => {
   let data = JSON.parse(req.body.hotelContact)
+  let response
   // let data = req.body  // for test on Postman
 	if (!data) {
     debug.error("ERROR: No Data found in HotelContact request!")
@@ -15,9 +16,15 @@ router.post("/save/hotelContact-save", async (req, res) => {
   }
   let reply = await hotelContactLib.saveHotelContact(data)
   if (reply) {
-    res.status(200).send('HotelContact Saved!')
+    debug.info('HotelContact Saved!')
+    response = await nodeMailer.createHotelEmail(data)
   } else {
     res.status(500).send('ERROR: Duplicate Field Found or Error Saving HotelContact!')
+  }
+  if (response) {
+    res.status(200).send('HotelContact Saved! And Email Sent!')
+  } else {
+    res.status(500).send('ERROR: Email Sent Failed!')
   }
 })
 
@@ -39,7 +46,6 @@ router.patch("/update/hotelContact-update", async (req, res) => {
 
 // fetching all hotelContact
 router.get('/fetch/hotelContact-fetch', async(req, res) => {
-  await nodeMailer.sendEmail()
   let reply = await hotelContactLib.fetchAllHotelContacts()
   if (reply) {
     res.status(200).send(reply)
