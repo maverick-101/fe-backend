@@ -1,7 +1,7 @@
 const router = require('express').Router()
 let debug = require("debug-levels")("packageContactApi")
 const PackageContact = require('../models/PackageContact')
-const packageContactLib = require('../lib/packageContactLib')
+const packageContactLib = require('../lib/PackageContactLib')
 
 
 // Saving packageContact
