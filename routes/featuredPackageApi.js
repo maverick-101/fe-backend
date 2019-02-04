@@ -62,16 +62,6 @@ router.get('/fetchById/featuredPackage-fetchById/:Id', async(req, res) => {
   }
 })
 
-//fetching valid by FeaturedPackages
-router.get('/fetchFeaturedPackages/featuredPackage-fetchFeaturedPackages', async(req, res) => {
-  let reply = await FeaturedPackageLib.findValidFeaturedPackageByDate(name)
-  if (reply) {
-    res.status(200).send(reply)
-  } else {
-    res.status(500).send('ERROR: No FeaturedPackage Found Or Error Fetching FeaturedPackage By Name!')
-  }
-})
-
 //Delete FeaturedPackage by ID
 router.delete('/delete/featuredPackage-deleteById/:Id', async(req, res) => {
   let Id = req.params.Id

@@ -62,16 +62,6 @@ router.get('/fetchById/featuredHotel-fetchById/:Id', async(req, res) => {
   }
 })
 
-//fetching valid by FeaturedHotels
-router.get('/fetchFeaturedHotels/featuredHotel-fetchFeaturedHotels', async(req, res) => {
-  let reply = await FeaturedHotelLib.findValidFeaturedHotelByDate(name)
-  if (reply) {
-    res.status(200).send(reply)
-  } else {
-    res.status(500).send('ERROR: No FeaturedHotel Found Or Error Fetching FeaturedHotel By Name!')
-  }
-})
-
 //Delete FeaturedHotel by ID
 router.delete('/delete/featuredHotel-deleteById/:Id', async(req, res) => {
   let Id = req.params.Id
