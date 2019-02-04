@@ -8,7 +8,7 @@ let debug = require("debug-levels")("featuredPackageLibApi")
 // Saving featuredPackage
 router.post("/save/featuredPackage-save", async (req, res) => {
   let data = JSON.parse(req.body.featuredPackage)
-  let data = req.body  // for test on Postman
+  // let data = req.body  // for test on Postman
 	if (!data) {
     debug.error("ERROR: No Data found in FeaturedPackage request!")
     res.status(500).send("ERROR: No Data found in FeaturedPackage request!")
