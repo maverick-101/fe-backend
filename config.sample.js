@@ -1,4 +1,4 @@
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'development'
 
 const config = {
   development: {
@@ -15,6 +15,8 @@ const config = {
       DB_NAME: '',
       mongoUri: ''
     },
+    EMAIL: '',
+    PASSWORD: ''
   },
   production: {
     siteUrl: '',
@@ -29,8 +31,9 @@ const config = {
       DB_NAME: '',
       mongoUri: ''
     },
-    
+    EMAIL: '',
+    PASSWORD: ''
   },
-};
+}
 
-module.exports = config[env];
+module.exports = config[env]
