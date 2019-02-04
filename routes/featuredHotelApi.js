@@ -7,8 +7,8 @@ const AppConfig = require('../lib/AppConfig')
 
 // Saving FeaturedHotel
 router.post("/save/featuredHotel-save", async (req, res) => {
-  // let data = JSON.parse(req.body.featuredHotel)
-  let data = req.body  // for test on Postman
+  let data = JSON.parse(req.body.featuredHotel)
+  // let data = req.body  // for test on Postman
 	if (!data) {
     debug.error("ERROR: No Data found in FeaturedHotel request!")
     res.status(500).send("ERROR: No Data found in FeaturedHotel request!")
