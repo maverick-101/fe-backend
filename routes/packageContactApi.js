@@ -2,6 +2,7 @@ const router = require('express').Router()
 let debug = require("debug-levels")("packageContactApi")
 const PackageContact = require('../models/PackageContact')
 const packageContactLib = require('../lib/PackageContactLib')
+const NodeMailer = require('../lib/NodeMailer')
 
 
 // Saving packageContact
@@ -13,17 +14,22 @@ router.post("/save/packageContact-save", async (req, res) => {
     res.status(500).send("ERROR: No Data found in packageContact request!")
   }
   let reply = await packageContactLib.savePackageContact(data)
-  if (reply) {
-    res.status(200).send('PackageContact Saved!')
+  if(reply) {
+    let response = await NodeMailer.createPackageEmail(data)
+    if (response) {
+      res.status(200).send('PackageContact Saved And Emailed Send SuccessFully!')
+    } else {
+      res.status(500).send('ERROR: Sending Email!')
+    }
   } else {
-    res.status(500).send('ERROR: Duplicate Field Found or Error Saving PackageContact!')
+    res.status(500).send('ERROR: Duplicate Field Found OR Error Saving PackageContact!')
   }
 })
 
 // Updating packageContact
 router.patch("/update/packageContact-update", async (req, res) => {
-  let data = JSON.parse(req.body.packageContact)
-  // let data = req.body   //for testing in postman
+  // let data = JSON.parse(req.body.packageContact)
+  let data = req.body   //for testing in postman
 	if (!data) {
     debug.error("ERROR: No Data found in PackageContact request!")
     res.status(500).send("ERROR: No Data found in PackageContact request!")

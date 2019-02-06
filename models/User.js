@@ -25,7 +25,6 @@ let userSchema = new Schema({
 	},
 	address: String,
 	password: String,
-  type: String,
   city_id: Number
 },
 { 
