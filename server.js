@@ -6,20 +6,7 @@ const ModelUtils = require('./models/ModelUtils')
 
 const cors = require('cors');
 
-const whitelist = ['https://admin.dev.saaditrips.com', 'http://localhost:8080', 'http://localhost:8081'];
-const corsOptions = {
-  origin(origin, callback) {
-    console.log('---------------------------------\n origin: ', origin, '\n---------------------------------');
-    if ((whitelist.indexOf(origin) !== -1 || !origin) || (app.get('env') === 'development' && (origin.indexOf('192.168') >= 0 || origin === 'null')) || origin === 'null') {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-};
 
-app.use(cors(corsOptions));
 
 // require .env
 require('dotenv').config()
@@ -36,6 +23,20 @@ async function startUp() {
   await DbConn.init()
   await ModelUtils.initAll()
   
+  const whitelist = ['https://admin.dev.saaditrips.com', 'http://localhost:8080', 'http://localhost:8081'];
+  const corsOptions = {
+  origin(origin, callback) {
+    console.log('---------------------------------\n origin: ', origin, '\n---------------------------------');
+    if ((whitelist.indexOf(origin) !== -1 || !origin) || (app.get('env') === 'development' && (origin.indexOf('192.168') >= 0 || origin === 'null')) || origin === 'null') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
   app.listen(port, function () {
     console.log('fe-backend server listening on port ', port)
   })
