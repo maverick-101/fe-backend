@@ -27,8 +27,8 @@ router.post("/user/save", parser.single("profile_picture"), async (req, res) => 
 	let cloudinaryData = req.file
   let profile_picture = {}
   debug.info(cloudinaryData)
-  // let data = JSON.parse(req.body.user)
-  let data = req.body  // for test on Postman
+  let data = JSON.parse(req.body.user)
+  // let data = req.body  // for test on Postman
 	if (!data) {
     debug.error("ERROR: No Data found in User request!")
     res.status(500).send("ERROR: No Data found in User request!")
@@ -82,8 +82,8 @@ router.patch("/user/update", parser.single("profile_picture"), async (req, res) 
   let cloudinaryData = req.file
   let profile_picture = {}
   debug.info(cloudinaryData)
-  // let data = JSON.parse(req.body.user)
-  let data = req.body   //for testing in postman
+  let data = JSON.parse(req.body.user)
+  // let data = req.body   //for testing in postman
 	if (!data) {
     debug.error("ERROR: No Data found in User request!")
     res.status(500).send("ERROR: No Data found in User request!")
