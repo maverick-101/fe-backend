@@ -72,8 +72,6 @@ router.patch("/update/city-update", parser.array("gallery_images"), async (req, 
       res.status(500).send('ERROR: No ID Found or Error Updating City!')
     }
   }
-  
-  
 })
 
 // fetching all cities

@@ -43,7 +43,7 @@ router.post("/lcoationResources/save", parser.array("gallery_images"), async (re
 	}
   const locationResources = new LocationResources({
 		location_id: data.location_id,
-		type: data.type,
+		resource_type: data.resource_type,
 		city_id: data.city_id,
 		URL: data.URL,
 		status: data.status,
@@ -122,9 +122,12 @@ router.get('/lcoationResources/fetch', async(req, res) => {
 	})
 })
 
-//fetching all location resources
-router.get('/lcoationResources/fetch', async(req, res) => {
-	LocationResources.find()
+//fetching all locationresources By ID
+router.get('/lcoationResources/fetchById/:Id', async(req, res) => {
+	let Id = req.params.Id
+	LocationResources.find({ 
+		ID: Id,
+	})
 	.exec()
 	.then(response => {
 	  debug.info('LocationResources: ', response)
@@ -190,6 +193,30 @@ router.get('/lcoationResources/fetchById/:Id/locationId/:locationId', async(req,
 	.catch(error => {
 	  debug.error("No LocationResources found", error)
 	  res.send(error)
+	})
+})
+
+//Delete lcoationResources by ID
+router.delete('/delete/lcoationResources-deleteById/:Id', async(req, res) => {
+  let Id = req.params.Id
+  if (!Id) {
+    debug.error("ERROR: No ID found in lcoationResources Delete request!")
+    res.status(500).send("ERROR: No ID found in lcoationResources Delete request!")
+  }
+  await LocationResources.findOneAndDelete({ 
+		ID: Id 
+	})
+	.then (response => {
+		if (!response) {
+			return
+		}
+		debug.info('lcoationResources: ', response)
+		reply = response
+		res.status(200).send(reply)
+	})
+	.catch(error => {
+		debug.error("No lcoationResources found", error)
+		res.status(500).send('ERROR: No lcoationResources Found Or Deleting lcoationResources!')
 	})
 })
 

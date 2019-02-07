@@ -53,14 +53,23 @@ router.patch("/update/location-update", parser.array("gallery_images"), async (r
     debug.error("ERROR: No Data found in location request!")
     res.status(500).send("ERROR: No Data found in location request!")
   }
-  gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
-  data.gallery = gallery
-  delete data.image_type
-  let reply = await LocationLib.updateLocation(data)
-  if (reply) {
-    res.status(200).send('location Updated!')
+  if(cloudinaryData) {
+    gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
+    data.gallery = gallery
+    delete data.image_type
+    let reply = await LocationLib.updateLocation(data)
+    if (reply) {
+      res.status(200).send('location Updated!')
+    } else {
+      res.status(500).send('ERROR: No ID Found or Error Updating location!')
+    }
   } else {
-    res.status(500).send('ERROR: No ID Found or Error Updating location!')
+    let reply = await LocationLib.updateLocation(data)
+    if (reply) {
+      res.status(200).send('location Updated!')
+    } else {
+      res.status(500).send('ERROR: No ID Found or Error Updating location!')
+    }
   }
 })
 

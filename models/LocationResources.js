@@ -8,7 +8,7 @@ let locationResourcesSchema = new Schema({
 		unique:true
 	},
   location_id: Number,
-  type: String,
+  resource_type: String,
   city_id: Number,
   URL: String,
   status: String,
