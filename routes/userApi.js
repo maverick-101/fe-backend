@@ -112,12 +112,12 @@ router.get('/user/fetch', async(req, res) => {
 
 // fetching User by ID
 router.get('/user/fetchById/:Id', async(req, res) => {
-  let name = req.params.name
-  if (!name ) {
-    debug.error("ERROR: No name found in User request!")
-    res.status(500).send("ERROR: No name found in User request!")
+  let Id = req.params.Id
+  if (!Id ) {
+    debug.error("ERROR: No Id found in User request!")
+    res.status(500).send("ERROR: No Id found in User request!")
   }
-  let reply = await UserLib.findUserByName(name)
+  let reply = await UserLib.findUserById(Id)
   if (reply) {
     res.status(200).send(reply)
   } else {
