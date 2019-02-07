@@ -54,15 +54,26 @@ router.patch("/update/city-update", parser.array("gallery_images"), async (req, 
     debug.error("ERROR: No Data found in City UPDATE request!")
     res.status(500).send("ERROR: No Data found in City UPDATE request!")
   }
-  gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
-  data.gallery = gallery
-  delete data.image_type
-  let reply = await CityLib.updateCity(data)
-  if (reply) {
-    res.status(200).send('City Updated!')
+  if (cloudinaryData) {
+    gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
+    data.gallery = gallery
+    delete data.image_type
+    let reply = await CityLib.updateCity(data)
+    if (reply) {
+      res.status(200).send('City Updated!')
+    } else {
+      res.status(500).send('ERROR: No ID Found or Error Updating City!')
+    }
   } else {
-    res.status(500).send('ERROR: No ID Found or Error Updating City!')
+    let reply = await CityLib.updateCity(data)
+    if (reply) {
+      res.status(200).send('City Updated!')
+    } else {
+      res.status(500).send('ERROR: No ID Found or Error Updating City!')
+    }
   }
+  
+  
 })
 
 // fetching all cities
