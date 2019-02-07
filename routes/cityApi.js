@@ -30,8 +30,8 @@ router.post("/save/city-save", parser.array("gallery_images"), async (req, res) 
   let data = JSON.parse(req.body.city)
   // let data = req.body  // for test on Postman
 	if (!data) {
-    debug.error("ERROR: No Data found in request!")
-    res.status(500).send("ERROR: No Data found in request!")
+    debug.error("ERROR: No Data found in City POST request!")
+    res.status(500).send("ERROR: No Data found in City POST request!")
   }
   gallery = await CloudinaryLib.createGallery(data, cloudinaryData)
   data.gallery = gallery
@@ -51,8 +51,8 @@ router.patch("/update/city-update", parser.array("gallery_images"), async (req, 
   let data = JSON.parse(req.body.city)
   // let data = req.body   //for testing in postman
 	if (!data) {
-    debug.error("ERROR: No Data found in request!")
-    res.status(500).send("ERROR: No Data found in request!")
+    debug.error("ERROR: No Data found in City UPDATE request!")
+    res.status(500).send("ERROR: No Data found in City UPDATE request!")
   }
   gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
   data.gallery = gallery
@@ -79,8 +79,8 @@ router.get('/fetch/city-fetch', async(req, res) => {
 router.get('/fetchById/city-fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
   if (!Id) {
-    debug.error("ERROR: No ID found in request!")
-    res.status(500).send("ERROR: No ID found in request!")
+    debug.error("ERROR: No ID found in City FetchByID request!")
+    res.status(500).send("ERROR: No ID found in City FetchByID request!")
   }
   let reply = await CityLib.findCityById(Id)
   if (reply) {
@@ -94,8 +94,8 @@ router.get('/fetchById/city-fetchById/:Id', async(req, res) => {
 router.get('/fetchByName/city-fetchByName/:name', async(req, res) => {
   let name = req.params.name
   if (!name ) {
-    debug.error("ERROR: No name found in request!")
-    res.status(500).send("ERROR: No name found in request!")
+    debug.error("ERROR: No name found in City FetchByName  request!")
+    res.status(500).send("ERROR: No name found in City FetchByName  request!")
   }
   let reply = await CityLib.findCityByName(name)
   if (reply) {
@@ -109,8 +109,8 @@ router.get('/fetchByName/city-fetchByName/:name', async(req, res) => {
 router.get('/fetchByProvince/city-fetchByProvince/:province', async(req, res) => {
   let province = req.params.province
   if (!province ) {
-    debug.error("ERROR: No province found in request!")
-    res.status(500).send("ERROR: No province found in request!")
+    debug.error("ERROR: No province found in City FetchByProvince request!")
+    res.status(500).send("ERROR: No province found in City FetchByProvince request!")
   }
   let reply = await CityLib.findCityByProvince(province)
   if (reply) {
@@ -124,8 +124,8 @@ router.get('/fetchByProvince/city-fetchByProvince/:province', async(req, res) =>
 router.delete('/delete/city-deleteById/:Id', async(req, res) => {
   let Id = req.params.Id
   if (!Id) {
-    debug.error("ERROR: No ID found in request!")
-    res.status(500).send("ERROR: No ID found in request!")
+    debug.error("ERROR: No ID found in City Delete request!")
+    res.status(500).send("ERROR: No ID found in City Delete request!")
   }
   let reply = await CityLib.deleteCityById(Id)
   if (reply) {
