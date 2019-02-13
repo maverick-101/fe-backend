@@ -22,7 +22,7 @@ router.post("/save/hotelRating-save", async (req, res) => {
 })
 
 // Updating HotelRating
-router.patch("/update/HotelRating-update", async (req, res) => {
+router.patch("/update/hotelRating-update", async (req, res) => {
 	if (!req.body.hotelRating) {
     debug.error("ERROR: No Data found in HotelRating request!")
     res.status(500).send("ERROR: No Data found in HotelRating request!")
