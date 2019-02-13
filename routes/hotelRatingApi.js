@@ -15,7 +15,17 @@ router.post("/save/hotelRating-save", async (req, res) => {
   // let data = req.body  // for test on Postman
   let reply = await HotelRatingLib.saveHotelRating(data)
   if (reply) {
-    res.status(200).send('HotelRating Saved!')
+    let response = await HotelRatingLib.aggregateHotelRating(data.hotel_id)
+    if(response) {
+      let updateHotel = await HotelRatingLib.updateHotelData(response)
+      if(updateHotel) {
+        res.status(200).send('HotelRating Saved And Hotel Updated!')
+      } else {
+        res.status(500).send('ERROR: Hotel Rating Saved but Updating Hotel Document!')
+      }
+    } else {
+      res.status(500).send('ERROR: Hotel Rating Saved but Error calculating Hotel Rating!')
+    }
   } else {
     res.status(500).send('ERROR: Duplicate Field Found or Error Saving HotelRating!')
   }
@@ -31,9 +41,19 @@ router.patch("/update/hotelRating-update", async (req, res) => {
   // let data = req.body  // for test on Postman
   let reply = await HotelRatingLib.updateHotelRating(data)
   if (reply) {
-    res.status(200).send('HotelRating Updated!')
+    let response = await HotelRatingLib.aggregateHotelRating(data.hotel_id)
+    if(response) {
+      let updateHotel = await HotelRatingLib.updateHotelData(response)
+      if(updateHotel) {
+        res.status(200).send('HotelRating Updated And Hotel Updated!')
+      } else {
+        res.status(500).send('ERROR: Hotel Rating Updated but Updating Hotel Document!')
+      }
+    } else {
+      res.status(500).send('ERROR: Hotel Rating Updated but Error calculating Hotel Rating!')
+    }
   } else {
-    res.status(500).send('ERROR: No ID Found or Error Updating HotelRating!')
+    res.status(500).send('ERROR: Duplicate Field Found or Error Updating HotelRating!')
   }
 })
 

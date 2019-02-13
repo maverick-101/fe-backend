@@ -57,7 +57,7 @@ const packagePageSchema = mongoose.Schema({
   ], 
   latitude: String,
   longitude: String,
-  rating: String
+  star_rating: Number
 },
 { versionKey: false })
 

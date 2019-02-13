@@ -15,7 +15,17 @@ router.post("/save/packageRating-save", async (req, res) => {
   // let data = req.body  // for test on Postman
   let reply = await PackageRatingLib.savePackageRating(data)
   if (reply) {
-    res.status(200).send('PackageRating Saved!')
+    let response = await PackageRatingLib.aggregatePackageRating(data.package_id)
+    if(response) {
+      let updatePackage = await PackageRatingLib.updatePackageData(response)
+      if(updatePackage) {
+        res.status(200).send('PackageRating Saved And Package Updated!')
+      } else {
+        res.status(500).send('ERROR: Package Rating Saved but Updating Package Document!')
+      }
+    } else {
+      res.status(500).send('ERROR: Package Rating Saved but Error calculating Package Rating!')
+    }
   } else {
     res.status(500).send('ERROR: Duplicate Field Found or Error Saving PackageRating!')
   }
@@ -31,9 +41,19 @@ router.patch("/update/packageRating-update", async (req, res) => {
   // let data = req.body  // for test on Postman
   let reply = await PackageRatingLib.updatePackageRating(data)
   if (reply) {
-    res.status(200).send('PackageRating Updated!')
+    let response = await PackageRatingLib.aggregatePackageRating(data.package_id)
+    if(response) {
+      let updatePackage = await PackageRatingLib.updatePackageData(response)
+      if(updatePackage) {
+        res.status(200).send('PackageRating Updated And Package Updated!')
+      } else {
+        res.status(500).send('ERROR: Package Rating Updated but Updating Package Document!')
+      }
+    } else {
+      res.status(500).send('ERROR: Package Rating Updated but Error calculating Package Rating!')
+    }
   } else {
-    res.status(500).send('ERROR: No ID Found or Error Updating PackageRating!')
+    res.status(500).send('ERROR: Duplicate Field Found or Error Updating PackageRating!')
   }
 })
 

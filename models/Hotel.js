@@ -11,6 +11,7 @@ const hotelSchema = mongoose.Schema({
     city_id: Number,
     user_id: Number,
     description: String,
+    stars: Number,
     gallery: [
       {
         public_id: String,
@@ -18,7 +19,6 @@ const hotelSchema = mongoose.Schema({
         image_type: String
       }
     ],
-    stars: Number,
     url: String,
     pets_allowed: Boolean,
     smoking_allowed: Boolean,
