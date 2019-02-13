@@ -1,79 +1,155 @@
 const router = require('express').Router()
-const FeaturedPackage = require('../models/FeaturedPackage')
-const FeaturedPackageLib = require('../lib/FeaturedPackageLib')
+let debug = require("debug-levels")("PackageRatingApi")
+const PackageRating = require('../models/PackageRating')
+const PackageRatingLib = require('../lib/packageRatingLib')
 const AppConfig = require('../lib/AppConfig')
-let debug = require("debug-levels")("featuredPackageLibApi")
 
 
-// Saving featuredPackage
-router.post("/save/featuredPackage-save", async (req, res) => {
-  let data = JSON.parse(req.body.featuredPackage)
+// Saving PackageRating
+router.post("/save/packageRating-save", async (req, res) => {
+	if (!req.body.packageRating) {
+    debug.error("ERROR: No Data found in PackageRating request!")
+    res.status(500).send("ERROR: No Data found in PackageRating request!")
+  }
+  let data = JSON.parse(req.body.packageRating)
   // let data = req.body  // for test on Postman
-	if (!data) {
-    debug.error("ERROR: No Data found in FeaturedPackage request!")
-    res.status(500).send("ERROR: No Data found in FeaturedPackage request!")
-  }
-  let reply = await FeaturedPackageLib.saveFeaturedPackage(data)
+  let reply = await PackageRatingLib.savePackageRating(data)
   if (reply) {
-    res.status(200).send('FeaturedPackage Saved!')
+    res.status(200).send('PackageRating Saved!')
   } else {
-    res.status(500).send('ERROR: Duplicate Field Found or Error Saving FeaturedPackage!')
+    res.status(500).send('ERROR: Duplicate Field Found or Error Saving PackageRating!')
   }
 })
 
-// Updating FeaturedPackage
-router.patch("/update/featuredPackage-update", async (req, res) => {
-  let data = JSON.parse(req.body.featuredPackage)
-  // let data = req.body   //for testing in postman
-	if (!data) {
-    debug.error("ERROR: No Data found in FeaturedPackage request!")
-    res.status(500).send("ERROR: No Data found in FeaturedPackage request!")
+// Updating PackageRating
+router.patch("/update/packageRating-update", async (req, res) => {
+	if (!req.body.packageRating) {
+    debug.error("ERROR: No Data found in PackageRating request!")
+    res.status(500).send("ERROR: No Data found in PackageRating request!")
   }
-  let reply = await FeaturedPackageLib.updateFeaturedPackage(data)
+  let data = JSON.parse(req.body.packageRating)
+  // let data = req.body  // for test on Postman
+  let reply = await PackageRatingLib.updatePackageRating(data)
   if (reply) {
-    res.status(200).send('FeaturedPackage Updated!')
+    res.status(200).send('PackageRating Updated!')
   } else {
-    res.status(500).send('ERROR: No ID Found or Error Updating FeaturedPackage!')
+    res.status(500).send('ERROR: No ID Found or Error Updating PackageRating!')
   }
 })
 
-// fetching all FeaturedPackage
-router.get('/fetch/featuredPackage-fetch', async(req, res) => {
-  let reply = await FeaturedPackageLib.fetchAllFeaturedPackages()
+// fetching all PackageRating
+router.get('/fetch/packageRating-fetch', async(req, res) => {
+  let reply = await PackageRatingLib.fetchAllPackageRatings()
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No FeaturedPackage Found Or Error Fetching FeaturedPackages!')
+    res.status(500).send('ERROR: No PackageRating Found Or Error Fetching PackageRating!')
   }
 })
 
-// fetching FeaturedPackage by ID
-router.get('/fetchById/featuredPackage-fetchById/:Id', async(req, res) => {
+// fetching PackageRating by ID
+router.get('/fetchById/packageRating-fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
   if (!Id) {
-    debug.error("ERROR: No ID found in FeaturedPackage request!")
-    res.status(500).send("ERROR: No ID found in FeaturedPackage request!")
+    debug.error("ERROR: No ID found in PackageRating request!")
+    res.status(500).send("ERROR: No ID found in PackageRating request!")
   }
-  let reply = await FeaturedPackageLib.findFeaturedPackageById(Id)
+  let reply = await PackageRatingLib.findPackageRatingById(Id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No FeaturedPackage Found Or Error Fetching FeaturedPackage By ID!')
+    res.status(500).send('ERROR: No PackageRating Found Or Error Fetching PackageRating By ID!')
   }
 })
 
-//Delete FeaturedPackage by ID
-router.delete('/delete/featuredPackage-deleteById/:Id', async(req, res) => {
-  let Id = req.params.Id
-  if (!Id) {
-    debug.error("ERROR: No ID found in FeaturedPackage request!")
-    res.status(500).send("ERROR: No ID found in FeaturedPackage request!")
+// fetching PackageRating by User ID
+router.get('/fetchByUserId/packageRating-fetchByUserId/:user_id', async(req, res) => {
+  let user_id = req.params.user_id
+  if (!user_id) {
+    debug.error("ERROR: No user_id found in PackageRating request!")
+    res.status(500).send("ERROR: No user_id found in PackageRating request!")
   }
-  let reply = await FeaturedPackageLib.deleteFeaturedPackageById(Id)
+  let reply = await PackageRatingLib.findPackageRatingByUserId(user_id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No FeaturedPackage Found Or Deleting FeaturedPackage!')
+    res.status(500).send('ERROR: No PackageRating Found Or Error Fetching PackageRating By user_id!')
+  }
+})
+
+// fetching PackageRating by fetchByPackageId
+router.get('/fetchByPackageId/packageRating-fetchByPackageId/:package_id', async(req, res) => {
+  let package_id = req.params.package_id
+  if (!package_id) {
+    debug.error("ERROR: No package_id found in PackageRating request!")
+    res.status(500).send("ERROR: No package_id found in PackageRating request!")
+  }
+  let reply = await PackageRatingLib.findPackageRatingByPackageId(package_id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No PackageRating Found Or Error Fetching PackageRating By package_id!')
+  }
+})
+
+// fetching PackageRating by fetchByPackageIdAndUserId
+router.get('/fetchByPackageIdAndUserId/packageRating-packageId/:package_id/userId/:user_id', async(req, res) => {
+  let package_id = req.params.package_id
+  let user_id = req.params.user_id
+  if (!package_id || !user_id) {
+    debug.error("ERROR: No package_id or user_id found in PackageRating request!")
+    res.status(500).send("ERROR: No package_id or user_id found in PackageRating request!")
+  }
+  let reply = await PackageRatingLib.findPackageRatingByPackageIdAndUserId(package_id, user_id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No PackageRating Found Or Error Fetching PackageRating By package_id or user_id!')
+  }
+})
+
+// fetching all Pending PackageRating
+router.get('/fetchAllPending/packageRating-fetchAllPending', async(req, res) => {
+  let reply = await PackageRatingLib.findPendingPackageRatings()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No PackageRating Found Or Error Fetching PackageRating Pending!')
+  }
+})
+
+// fetching all Rejected PackageRating
+router.get('/fetchAllRejected/packageRating-fetchAllRejected', async(req, res) => {
+  let reply = await PackageRatingLib.findRejectedPackageRating()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No PackageRating Found Or Error Fetching PackageRating Rejected!')
+  }
+})
+
+// fetching all Pending PackageRating
+router.get('/fetchAllAccepted/packageRating-fetchAllAccepted', async(req, res) => {
+  let reply = await PackageRatingLib.findAcceptedPackageRating()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No PackageRating Found Or Error Fetching PackageRating Accepted!')
+  }
+})
+
+//Delete PackageRating by ID
+router.delete('/delete/packageRating-deleteById/:Id', async(req, res) => {
+  let Id = req.params.Id
+  if (!Id) {
+    debug.error("ERROR: No ID found in PackageRating request!")
+    res.status(500).send("ERROR: No ID found in PackageRating request!")
+  }
+  let reply = await PackageRatingLib.deletePackageRatingById(Id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No PackageRating Found Or Deleting PackageRating!')
   }
 })
 

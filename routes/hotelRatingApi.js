@@ -1,79 +1,155 @@
 const router = require('express').Router()
-let debug = require("debug-levels")("featuredHotelLibApi")
-const FeaturedHotel = require('../models/FeaturedHotel')
-const FeaturedHotelLib = require('../lib/FeaturedHotelLib')
+let debug = require("debug-levels")("hotelRatingApi")
+const HotelRating = require('../models/HotelRating')
+const HotelRatingLib = require('../lib/hotelRatingLib')
 const AppConfig = require('../lib/AppConfig')
 
 
-// Saving FeaturedHotel
-router.post("/save/featuredHotel-save", async (req, res) => {
-  // let data = JSON.parse(req.body.featuredHotel)
-  let data = req.body  // for test on Postman
-	if (!data) {
-    debug.error("ERROR: No Data found in FeaturedHotel request!")
-    res.status(500).send("ERROR: No Data found in FeaturedHotel request!")
+// Saving HotelRating
+router.post("/save/hotelRating-save", async (req, res) => {
+	if (!req.body.hotelRating) {
+    debug.error("ERROR: No Data found in HotelRating request!")
+    res.status(500).send("ERROR: No Data found in HotelRating request!")
   }
-  let reply = await FeaturedHotelLib.saveFeaturedHotel(data)
+  let data = JSON.parse(req.body.hotelRating)
+  // let data = req.body  // for test on Postman
+  let reply = await HotelRatingLib.saveHotelRating(data)
   if (reply) {
-    res.status(200).send('FeaturedHotel Saved!')
+    res.status(200).send('HotelRating Saved!')
   } else {
-    res.status(500).send('ERROR: Duplicate Field Found or Error Saving FeaturedHotel!')
+    res.status(500).send('ERROR: Duplicate Field Found or Error Saving HotelRating!')
   }
 })
 
-// Updating FeaturedHotel
-router.patch("/update/featuredHotel-update", async (req, res) => {
-  let data = JSON.parse(req.body.featuredHotel)
-  // let data = req.body   //for testing in postman
-	if (!data) {
-    debug.error("ERROR: No Data found in FeaturedHotel request!")
-    res.status(500).send("ERROR: No Data found in FeaturedHotel request!")
+// Updating HotelRating
+router.patch("/update/HotelRating-update", async (req, res) => {
+	if (!req.body.hotelRating) {
+    debug.error("ERROR: No Data found in HotelRating request!")
+    res.status(500).send("ERROR: No Data found in HotelRating request!")
   }
-  let reply = await FeaturedHotelLib.updateFeaturedHotel(data)
+  let data = JSON.parse(req.body.hotelRating)
+  // let data = req.body  // for test on Postman
+  let reply = await HotelRatingLib.updateHotelRating(data)
   if (reply) {
-    res.status(200).send('FeaturedHotel Updated!')
+    res.status(200).send('HotelRating Updated!')
   } else {
-    res.status(500).send('ERROR: No ID Found or Error Updating FeaturedHotel!')
+    res.status(500).send('ERROR: No ID Found or Error Updating HotelRating!')
   }
 })
 
-// fetching all FeaturedHotel
-router.get('/fetch/featuredHotel-fetch', async(req, res) => {
-  let reply = await FeaturedHotelLib.fetchAllFeaturedHotels()
+// fetching all HotelRating
+router.get('/fetch/hotelRating-fetch', async(req, res) => {
+  let reply = await HotelRatingLib.fetchAllHotelRatings()
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No FeaturedHotel Found Or Error Fetching FeaturedHotels!')
+    res.status(500).send('ERROR: No HotelRating Found Or Error Fetching HotelRating!')
   }
 })
 
-// fetching FeaturedHotel by ID
-router.get('/fetchById/featuredHotel-fetchById/:Id', async(req, res) => {
+// fetching HotelRating by ID
+router.get('/fetchById/hotelRating-fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
   if (!Id) {
-    debug.error("ERROR: No ID found in FeaturedHotel request!")
-    res.status(500).send("ERROR: No ID found in FeaturedHotel request!")
+    debug.error("ERROR: No ID found in HotelRating request!")
+    res.status(500).send("ERROR: No ID found in HotelRating request!")
   }
-  let reply = await FeaturedHotelLib.findFeaturedHotelById(Id)
+  let reply = await HotelRatingLib.findHotelRatingById(Id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No FeaturedHotel Found Or Error Fetching FeaturedHotel By ID!')
+    res.status(500).send('ERROR: No HotelRating Found Or Error Fetching HotelRating By ID!')
   }
 })
 
-//Delete FeaturedHotel by ID
-router.delete('/delete/featuredHotel-deleteById/:Id', async(req, res) => {
-  let Id = req.params.Id
-  if (!Id) {
-    debug.error("ERROR: No ID found in FeaturedHotel request!")
-    res.status(500).send("ERROR: No ID found in FeaturedHotel request!")
+// fetching HotelRating by User ID
+router.get('/fetchByUserId/hotelRating-fetchByUserId/:user_id', async(req, res) => {
+  let user_id = req.params.user_id
+  if (!user_id) {
+    debug.error("ERROR: No user_id found in HotelRating request!")
+    res.status(500).send("ERROR: No user_id found in HotelRating request!")
   }
-  let reply = await FeaturedHotelLib.deleteFeaturedHotelById(Id)
+  let reply = await HotelRatingLib.findHotelRatingByUserId(user_id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No FeaturedHotel Found Or Deleting FeaturedHotel!')
+    res.status(500).send('ERROR: No HotelRating Found Or Error Fetching HotelRating By user_id!')
+  }
+})
+
+// fetching HotelRating by fetchByHotelId
+router.get('/fetchByHotelId/hotelRating-fetchByHotelId/:hotel_id', async(req, res) => {
+  let hotel_id = req.params.hotel_id
+  if (!hotel_id) {
+    debug.error("ERROR: No hotel_id found in HotelRating request!")
+    res.status(500).send("ERROR: No hotel_id found in HotelRating request!")
+  }
+  let reply = await HotelRatingLib.findHotelRatingById(hotel_id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelRating Found Or Error Fetching HotelRating By hotel_id!')
+  }
+})
+
+// fetching HotelRating by fetchByHotelIdAndUserId
+router.get('/fetchByHotelIdAndUserId/hotelRating-hotelId/:hotel_id/userId/:user_id', async(req, res) => {
+  let hotel_id = req.params.hotel_id
+  let user_id = req.params.user_id
+  if (!hotel_id || !user_id) {
+    debug.error("ERROR: No hotel_id or user_id found in HotelRating request!")
+    res.status(500).send("ERROR: No hotel_id or user_id found in HotelRating request!")
+  }
+  let reply = await HotelRatingLib.findHotelRatingByHotelIdAndUserId(hotel_id, user_id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelRating Found Or Error Fetching HotelRating By hotel_id or user_id!')
+  }
+})
+
+// fetching all Pending HotelRating
+router.get('/fetchAllPending/hotelRating-fetchAllPending', async(req, res) => {
+  let reply = await HotelRatingLib.findPendingHotelRatings()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelRating Found Or Error Fetching HotelRating Pending!')
+  }
+})
+
+// fetching all Rejected HotelRating
+router.get('/fetchAllRejected/hotelRating-fetchAllRejected', async(req, res) => {
+  let reply = await HotelRatingLib.findRejectedHotelRatings()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelRating Found Or Error Fetching HotelRating Rejected!')
+  }
+})
+
+// fetching all Pending HotelRating
+router.get('/fetchAllAccepted/hotelRating-fetchAllAccepted', async(req, res) => {
+  let reply = await HotelRatingLib.findAcceptedHotelRatings()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelRating Found Or Error Fetching HotelRating Accepted!')
+  }
+})
+
+//Delete HotelRating by ID
+router.delete('/delete/hotelRating-deleteById/:Id', async(req, res) => {
+  let Id = req.params.Id
+  if (!Id) {
+    debug.error("ERROR: No ID found in HotelRating request!")
+    res.status(500).send("ERROR: No ID found in HotelRating request!")
+  }
+  let reply = await HotelRatingLib.deleteHotelRatingById(Id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelRating Found Or Deleting HotelRating!')
   }
 })
 
