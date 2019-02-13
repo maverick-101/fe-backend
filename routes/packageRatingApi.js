@@ -1,7 +1,7 @@
 const router = require('express').Router()
 let debug = require("debug-levels")("PackageRatingApi")
 const PackageRating = require('../models/PackageRating')
-const PackageRatingLib = require('../lib/packageRatingLib')
+const PackageRatingLib = require('../lib/PackageRatingLib')
 const AppConfig = require('../lib/AppConfig')
 
 

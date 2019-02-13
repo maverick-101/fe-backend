@@ -1,7 +1,7 @@
 const router = require('express').Router()
 let debug = require("debug-levels")("hotelRatingApi")
 const HotelRating = require('../models/HotelRating')
-const HotelRatingLib = require('../lib/hotelRatingLib')
+const HotelRatingLib = require('../lib/HotelRatingLib')
 const AppConfig = require('../lib/AppConfig')
 
 
