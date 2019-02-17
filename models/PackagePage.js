@@ -23,7 +23,7 @@ const packagePageSchema = mongoose.Schema({
   description: String, 
   travel_modes: [
     {
-      route: String,
+      travelmodes_title: String,
       departure: String,
       destination: String,
       travel_time: String,
