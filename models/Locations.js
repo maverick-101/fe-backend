@@ -18,6 +18,9 @@ let locationSchema  = new Schema({
       image_type: String
     }
   ],
+  province: {
+    type: String
+	},
   views: Number,
   star_rating: Number
 },
