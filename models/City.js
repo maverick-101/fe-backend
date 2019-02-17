@@ -21,7 +21,8 @@ const citySchema = mongoose.Schema({
       url: String,
       image_type: String
     }
-  ]
+  ],
+  description: String
 },
 { versionKey: false })
 
