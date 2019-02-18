@@ -54,7 +54,7 @@ router.patch("/update/city-update", parser.array("gallery_images"), async (req, 
     debug.error("ERROR: No Data found in City UPDATE request!")
     res.status(500).send("ERROR: No Data found in City UPDATE request!")
   }
-  if (cloudinaryData) {
+  if (cloudinaryData && cloudinaryData.length > 0) {
     gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
     data.gallery = gallery
     delete data.image_type

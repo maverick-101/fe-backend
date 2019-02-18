@@ -53,7 +53,7 @@ router.patch("/update/location-update", parser.array("gallery_images"), async (r
     debug.error("ERROR: No Data found in location request!")
     res.status(500).send("ERROR: No Data found in location request!")
   }
-  if(cloudinaryData) {
+  if(cloudinaryData && cloudinaryData.length > 0) {
     gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
     data.gallery = gallery
     delete data.image_type

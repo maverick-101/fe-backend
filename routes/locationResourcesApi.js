@@ -70,7 +70,7 @@ router.patch("/lcoationResources/update", parser.array("gallery_images"), async 
     debug.error("ERROR: No Data found in req!")
     res.send("ERROR: No Data found in req!")
   }
-  if(cloudinaryData) {
+  if(cloudinaryData && cloudinaryData.length > 0) {
     cloudinaryData.map(picture => {
       let pictureObject = {
         public_id: picture.public_id,

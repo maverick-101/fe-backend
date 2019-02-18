@@ -53,15 +53,25 @@ router.patch("/update/agentPage-update", parser.array("gallery_images"), async (
     debug.error("ERROR: No Data found in request!")
     res.status(500).send("ERROR: No Data found in request!")
   }
-  gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
-  data.gallery = gallery
-  delete data.image_type
-  let reply = await AgentPageLib.updateAgentPage(data)
-  if (reply) {
-    res.status(200).send('AgentPage Updated!')
+  if (cloudinaryData && cloudinaryData.length > 0) {
+    gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
+    data.gallery = gallery
+    delete data.image_type
+    let reply = await AgentPageLib.updateAgentPage(data)
+    if (reply) {
+      res.status(200).send('AgentPage Updated!')
+    } else {
+      res.status(500).send('ERROR: No ID Found or Error Updating AgentPage!')
+    }
   } else {
-    res.status(500).send('ERROR: No ID Found or Error Updating AgentPage!')
+    let reply = await AgentPageLib.updateAgentPage(data)
+    if (reply) {
+      res.status(200).send('AgentPage Updated!')
+    } else {
+      res.status(500).send('ERROR: No ID Found or Error Updating AgentPage!')
+    }
   }
+  
 })
 
 //fetching all agentPage

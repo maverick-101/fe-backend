@@ -59,15 +59,31 @@ router.patch("/hotel/update", parser.array("gallery_images"), async (req, res) =
     debug.error("ERROR: No Data found in Hotel request!")
     res.status(500).send("ERROR: No Data found in Hotel request!")
   }
-  gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
-  data.gallery = gallery
-  delete data.image_type
-  let reply = await HotelLib.updateHotel(data)
-  if (reply) {
-    res.status(200).send('City Updated!')
-  } else {
-    res.status(500).send('ERROR: No ID Found or Error Updating Hotel!')
+  if(data.stars) {
+    data.stars = Number(data.stars)
   }
+  if(data.star_rating) {
+    data.star_rating = Number(data.star_rating)
+  }
+  if (cloudinaryData && cloudinaryData.length > 0) {
+    gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
+    data.gallery = gallery
+    delete data.image_type
+    let reply = await HotelLib.updateHotel(data)
+    if (reply) {
+      res.status(200).send('City Updated!')
+    } else {
+      res.status(500).send('ERROR: No ID Found or Error Updating Hotel!')
+    }
+  } else {
+    let reply = await HotelLib.updateHotel(data)
+    if (reply) {
+      res.status(200).send('City Updated!')
+    } else {
+      res.status(500).send('ERROR: No ID Found or Error Updating Hotel!')
+    }
+  }
+  
 })
 
 //fetching all hotels
