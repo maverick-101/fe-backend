@@ -26,14 +26,20 @@ router.post("/hotel/save", parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
-  let data = JSON.parse(req.body.hotel)
-  // let data = req.body  // for test on Postman
+  // let data = JSON.parse(req.body.hotel)
+  let data = req.body  // for test on Postman
 	if (!data) {
     debug.error("ERROR: No Data found in Hotel request!")
     res.status(500).send("ERROR: No Data found in Hotel request!")
   }
   gallery = await CloudinaryLib.createGallery(data, cloudinaryData)
   data.gallery = gallery
+  if(data.stars) {
+    data.stars = Number(data.stars)
+  }
+  if(data.star_rating) {
+    data.star_rating = Number(data.star_rating)
+  }
   let reply = await HotelLib.saveHotel(data)
   if (reply) {
     res.status(200).send('Hotel Saved!')
