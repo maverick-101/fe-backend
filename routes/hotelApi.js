@@ -26,8 +26,8 @@ router.post("/hotel/save", parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
-  // let data = JSON.parse(req.body.hotel)
-  let data = req.body  // for test on Postman
+  let data = JSON.parse(req.body.hotel)
+  // let data = req.body  // for test on Postman
 	if (!data) {
     debug.error("ERROR: No Data found in Hotel request!")
     res.status(500).send("ERROR: No Data found in Hotel request!")
