@@ -15,7 +15,8 @@ const featuredHotelSchema = mongoose.Schema({
   createdAt: {
     type: Date
   },
-  hotel_id: Number
+  hotel_id: Number,
+  starting_price: Number
 },
 { versionKey: false })
 

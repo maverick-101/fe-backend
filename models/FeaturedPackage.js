@@ -15,7 +15,8 @@ const featuredPackageSchema = mongoose.Schema({
   createdAt: {
     type: Date
   },
-  package_id: Number
+  package_id: Number,
+  starting_price: Number
 },
 { versionKey: false })
 
