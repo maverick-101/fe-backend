@@ -89,6 +89,21 @@ router.get('/room/fetchById/:Id', async(req, res) => {
   }
 })
 
+// fetching Room by hotel ID
+router.get('/room/fetchByHotelId/:hotelId', async(req, res) => {
+  let Id = req.params.hotelId
+  if (!Id) {
+    debug.error("ERROR: No ID found in Room request!")
+    res.status(500).send("ERROR: No ID found in Room request!")
+  }
+  let reply = await RoomLib.findRoomByHotelId(Id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Room Found Or Error Fetching Room By ID!')
+  }
+})
+
 //fetching Room by title
 router.get('/room/fetchByTitle/:title', async(req, res) => {
   let title = req.params.title
