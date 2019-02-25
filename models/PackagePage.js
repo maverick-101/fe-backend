@@ -2,7 +2,10 @@ const mongoose = require('mongoose')
 const autoIncrement = require('mongoose-auto-increment')
 
 const packagePageSchema = mongoose.Schema({
-  ID: Number,
+  ID:{
+    type: Number,
+    unique:true
+  },
   agent_id: Number, 
   city_id: Number, 
   location_id: Number,
@@ -58,7 +61,8 @@ const packagePageSchema = mongoose.Schema({
   ], 
   latitude: String,
   longitude: String,
-  star_rating: Number
+  star_rating: Number,
+  views: Number
 },
 { versionKey: false })
 

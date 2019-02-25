@@ -98,6 +98,31 @@ router.get('/fetchById/packagePage-fetchById/:Id', async(req, res) => {
   }
 })
 
+// saving views of packagePage by ID
+router.get('/updateViews/packagePage-updateViews/:Id', async(req, res) => {
+  let Id = req.params.Id
+  if (!Id) {
+    debug.error("ERROR: No ID found in request!")
+    res.status(500).send("ERROR: No ID found in request!")
+  }
+  let reply = await PackagePageLib.UpdatePackagePageViews(Id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No packagePage Found Or Error Updating packagePage Views!')
+  }
+})
+
+//fetching all Top Visited Experience packagePages
+router.get('/fetchTopVisitedExpeiriences/packagePage-fetchTopVisitedExpeiriences', async(req, res) => {
+  let reply = await PackagePageLib.fetchTopVisitedExpeiriencesPackagePages()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No packagePage Found Or Error Fetching packagePages!')
+  }
+})
+
 // fetching packagePage by AgentID
 router.get('/fetchById/packagePage-fetchByAgentId/:agent_id', async(req, res) => {
   let agent_id = req.params.agent_id
