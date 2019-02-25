@@ -22,7 +22,8 @@ let locationSchema  = new Schema({
     type: String
 	},
   views: Number,
-  star_rating: Number
+  star_rating: Number,
+  recommended: Boolean
 },
 { versionKey: false })
 
