@@ -36,7 +36,7 @@ router.post("/room/save", parser.array("gallery_images"), async (req, res) => {
   data.gallery = gallery
   let reply = await RoomLib.saveRoom(data)
   if (reply) {
-    res.status(200).send('City Saved!')
+    res.status(200).send('Room Saved!')
   } else {
     res.status(500).send('ERROR: Duplicate Field Found or Error Saving Room!')
   }
@@ -58,7 +58,7 @@ router.patch("/room/update", parser.array("gallery_images"), async (req, res) =>
   delete data.image_type
   let reply = await RoomLib.updateRoom(data)
   if (reply) {
-    res.status(200).send('City Updated!')
+    res.status(200).send('Room Updated!')
   } else {
     res.status(500).send('ERROR: No ID Found or Error Updating Room!')
   }
