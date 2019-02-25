@@ -17,6 +17,7 @@ const hotelResourcesSchema = mongoose.Schema({
       url: String
     }
   ],
+  description: String,
   created_At: Date
 },
 { versionKey: false })

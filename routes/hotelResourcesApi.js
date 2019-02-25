@@ -160,4 +160,19 @@ router.delete('/delete/hotelResources-deleteById/:Id', async(req, res) => {
   }
 })
 
+//Delete image by public_id 
+router.delete('/delete/Image-deleteByPublicId/:public_id', async(req, res) => {
+  let public_id = req.params.public_id
+  if (!public_id) {
+    debug.error("ERROR: No public_id found in Image Delete request!")
+    res.status(500).send("ERROR: No public_id found in Image Delete request!")
+  }
+  let reply = await CloudinaryLib.deleteSingleImage(public_id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Image Found Or Deleting Image!')
+  }
+})
+
 module.exports = router
