@@ -21,8 +21,9 @@ router.post("/save/hotelContact-save", async (req, res) => {
   } else {
     res.status(500).send('ERROR: Duplicate Field Found or Error Saving HotelContact!')
   }
+  response = []
   if (response) {
-    res.status(200).send('HotelContact Saved! And Email Sent!')
+    res.status(200).send('HotelContact Saved!')
   } else {
     res.status(500).send('ERROR: Email Sent Failed!')
   }
