@@ -7,8 +7,51 @@ const hotelSchema = mongoose.Schema({
       unique: true
     },
     name: String,
-    location_id: Number,
+    location_Id: Number,
+    hotel_location: {
+      location_Id: {
+        type: Number,
+      },
+      city_id: Number,
+      name: {
+        type: String
+      },
+      gallery: [
+        {
+          public_id: String,
+          url: String,
+          image_type: String
+        }
+      ],
+      province: {
+        type: String
+      },
+      views: Number,
+      star_rating: Number,
+      recommended: Boolean
+    },
     city_id: Number,
+    hotel_city: {
+      city_id:{
+        type: Number,
+      },
+      province: {
+        type: String
+      }, 
+      name: {
+        type: String,
+      },
+      views: Number,
+      created_At: Date,
+      gallery: [
+        {
+          public_id: String,
+          url: String,
+          image_type: String
+        }
+      ],
+      description: String
+    },
     user_id: Number,
     description: String,
     stars: Number,
