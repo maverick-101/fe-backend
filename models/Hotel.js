@@ -20,6 +20,7 @@ const hotelSchema = mongoose.Schema({
       }
     ],
     url: String,
+    minimum_price: String,
     pets_allowed: Boolean,
     smoking_allowed: Boolean,
     address: String,
