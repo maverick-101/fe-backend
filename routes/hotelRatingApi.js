@@ -120,6 +120,21 @@ router.get('/fetchByHotelId/hotelRating-fetchByHotelId/:hotel_id', async(req, re
   }
 })
 
+// fetching HotelRating by fetchAcceptedHotel rating
+router.get('/fetchAcceptedHotelById/hotelRating-fetchAcceptedHotelById/:hotel_id', async(req, res) => {
+  let hotel_id = req.params.hotel_id
+  if (!hotel_id) {
+    debug.error("ERROR: No hotel_id found in HotelRating request!")
+    res.status(500).send("ERROR: No hotel_id found in HotelRating request!")
+  }
+  let reply = await HotelRatingLib.findAcceptedHotelRatingByHotelId(hotel_id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelRating Found Or Error Fetching HotelRating By hotel_id!')
+  }
+})
+
 // fetching HotelRating by fetchByHotelIdAndUserId
 router.get('/fetchByHotelIdAndUserId/hotelRating-hotelId/:hotel_id/userId/:user_id', async(req, res) => {
   let hotel_id = req.params.hotel_id
