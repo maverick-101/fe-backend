@@ -6,6 +6,7 @@ const hotelResourcesSchema = mongoose.Schema({
     	type: Number,
       unique:true
     },
+  hotelResources_title: String,
   hotel_id: Number,
   image_type: {
     type: String
