@@ -36,7 +36,7 @@ let routerList = [
   './homePageApi.js',
   './featuredHotelApi.js',
   './featuredPackageApi.js',
-  './hotelImageApi.js',
+  './hotelResourcesApi.js',
   './hotelRatingApi.js',
   './packageRatingApi.js'
 ]

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const autoIncrement = require('mongoose-auto-increment')
 
-const hotelImageSchema = mongoose.Schema({
+const hotelResourcesSchema = mongoose.Schema({
 	ID:{
     	type: Number,
       unique:true
@@ -20,8 +20,8 @@ const hotelImageSchema = mongoose.Schema({
 },
 { versionKey: false })
 
-hotelImageSchema.index({ ID: 1 }, {unique: true})
+hotelResourcesSchema.index({ ID: 1 }, {unique: true})
 
 autoIncrement.initialize(mongoose.connection)
-hotelImageSchema.plugin(autoIncrement.plugin, { model: 'HotelImages', field: 'ID' })
-module.exports = mongoose.model('HotelImages', hotelImageSchema)
+hotelResourcesSchema.plugin(autoIncrement.plugin, { model: 'HotelResources', field: 'ID' })
+module.exports = mongoose.model('HotelResources', hotelResourcesSchema)
