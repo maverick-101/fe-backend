@@ -36,16 +36,8 @@ const hotelSchema = mongoose.Schema({
     },
     latitude: String,
     longitude: String,
-    hotel_amenities: [
-      {
-        value: Boolean,
-        name: String
-      },
-      {
-        value: Boolean,
-        name: String
-      }
-    ]},
+    hotel_amenities: []
+  },
 { versionKey: false })
 
 hotelSchema.index({ ID: 1 }, {unique: true})
