@@ -88,14 +88,59 @@ router.get('/fetchByRoomId/hotelContact-fetchByRoomId/:room_id', async(req, res)
 router.get('/fetchByUserId/hotelContact-fetchByUserId/:user_id', async(req, res) => {
   let user_id = req.params.user_id
   if (!user_id) {
-    debug.error("ERROR: No ID found in HotelContact request!")
-    res.status(500).send("ERROR: No ID found in HotelContact request!")
+    debug.error("ERROR: No user_id found in HotelContact request!")
+    res.status(500).send("ERROR: No user_id found in HotelContact request!")
   }
   let reply = await hotelContactLib.findHotelContactByUserID(user_id)
   if (reply) {
     res.status(200).send(reply)
   } else {
     res.status(500).send('ERROR: No HotelContact Found Or Error Fetching HotelContact By ID!')
+  }
+})
+
+// fetching hotelContact by user phone
+router.get('/fetchByUserPhone/hotelContact-fetchByUserPhone/:user_phone', async(req, res) => {
+  let user_phone = req.params.user_phone
+  if (!user_phone) {
+    debug.error("ERROR: No user_phone found in HotelContact request!")
+    res.status(500).send("ERROR: No user_phone found in HotelContact request!")
+  }
+  let reply = await hotelContactLib.findHotelContactByUserPhone(user_phone)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelContact Found Or Error Fetching HotelContact By user_phone!')
+  }
+})
+
+// fetching hotelContact by user email
+router.get('/fetchByUserEmail/hotelContact-fetchByUserEmail/:user_email', async(req, res) => {
+  let user_email = req.params.user_email
+  if (!user_email) {
+    debug.error("ERROR: No user_email found in HotelContact request!")
+    res.status(500).send("ERROR: No user_email found in HotelContact request!")
+  }
+  let reply = await hotelContactLib.findHotelContactByUserEmail(user_email)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelContact Found Or Error Fetching HotelContact By user_email!')
+  }
+})
+
+// fetching hotelContact by user name
+router.get('/fetchByUserName/hotelContact-fetchByUserName/:user_name', async(req, res) => {
+  let user_name = req.params.user_name
+  if (!user_name) {
+    debug.error("ERROR: No user_name found in HotelContact request!")
+    res.status(500).send("ERROR: No user_name found in HotelContact request!")
+  }
+  let reply = await hotelContactLib.findHotelContactByUserName(user_name)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelContact Found Or Error Fetching HotelContact By user_name!')
   }
 })
 
