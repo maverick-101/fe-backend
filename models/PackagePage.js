@@ -7,6 +7,7 @@ const packagePageSchema = mongoose.Schema({
   city_id: Number, 
   location_id: Number,
   package_title: String,
+  minimum_price: String,
   price: [
     {
       person: String,
