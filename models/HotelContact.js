@@ -11,7 +11,10 @@ const hotelContactSchema = mongoose.Schema({
   start_date: Date,
   end_date: Date,
   nights_stay: Number,
-  user_id: Number
+  user_id: Number,
+  user_phone: Number,
+  user_name: Number,
+  user_email: Number
 },
 { versionKey: false })
 

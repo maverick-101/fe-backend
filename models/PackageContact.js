@@ -10,7 +10,10 @@ const packageContactSchema = mongoose.Schema({
   start_date: Date,
   end_date: Date,
   duration: Number,
-  user_id: Number
+  user_id: Number,
+  user_phone: Number,
+  user_name: Number,
+  user_email: Number
 },
 { versionKey: false })
 
