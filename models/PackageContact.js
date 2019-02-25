@@ -12,8 +12,8 @@ const packageContactSchema = mongoose.Schema({
   duration: Number,
   user_id: Number,
   user_phone: Number,
-  user_name: Number,
-  user_email: Number
+  user_name: String,
+  user_email: String
 },
 { versionKey: false })
 
