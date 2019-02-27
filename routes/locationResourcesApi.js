@@ -144,18 +144,41 @@ router.get('/lcoationResources/fetchById/:Id', async(req, res) => {
 //fetching all locationresources By location_id
 router.get('/lcoationResources/fetchByLocationId/:location_id', async(req, res) => {
 	let location_id = req.params.location_id
-	LocationResources.find({ 
-		location_id: location_id,
-	})
-	.exec()
-	.then(response => {
-	  debug.info('LocationResources: ', response)
-	  res.json(response)
-	})
-	.catch(error => {
-	  debug.error("No LocationResources found", error)
-	  res.send(error)
-	})
+	location_id = Number(location_id)
+	debug.info(typeof location_id)
+	let locationData = []
+	try {
+		locationData = await LocationResources.aggregate([
+			{
+				"$match":
+				{
+					"location_id": location_id
+				}
+			},
+			{ "$group" : 
+				{
+					"_id" : "$resource_type", 
+					"Resources": {
+						"$push": { 
+						"ID": "$ID",
+						"url": "$gallery.url",
+						"title": "$LocationResources_title",
+						"description": "$description"
+						}
+					},
+				} 
+			}
+	])
+	} catch (error) {
+		debug.info(error)
+	}
+	
+	if(locationData  && locationData.length) {
+		res.send(locationData)
+	} else {
+		debug.info('ERROR: No LocationResources Data Found!')
+		res.send('ERROR: No LocationResources Data Found!')
+	}
 })
 
 //fetching location resources by ID, LocationID and CityID
