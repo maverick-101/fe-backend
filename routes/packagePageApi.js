@@ -98,6 +98,22 @@ router.get('/fetchById/packagePage-fetchById/:Id', async(req, res) => {
   }
 })
 
+// fetching Many packagePage by Ids
+router.post('/fetchMany/packagePage-fetchMany', async(req, res) => {
+  if (!req.body.featuredPackageIds) {
+    debug.error("ERROR: No Data found in FeaturedPackage request!")
+    res.status(500).send("ERROR: No Data found in FeaturedPackage request!")
+  }
+  let data = JSON.parse(req.body.packagePageIds)
+  // let data = req.body   //for testing in postman
+  let reply = await PackagePageLib.fetchManyPackages(data)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No FeaturedPackage Found Or Error Fetching FeaturedPackages!')
+  }
+})
+
 // saving views of packagePage by ID
 router.get('/updateViews/packagePage-updateViews/:Id', async(req, res) => {
   let Id = req.params.Id

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const autoIncrement = require('mongoose-auto-increment')
 
 const hotelResourcesSchema = mongoose.Schema({
-	ID:{
+	ID: {
     	type: Number,
       unique:true
     },
@@ -11,12 +11,11 @@ const hotelResourcesSchema = mongoose.Schema({
   image_type: {
     type: String
   },
-  images: [
+  images:
     {
       public_id: String,
       url: String
-    }
-  ],
+    },
   description: String,
   created_At: Date
 },

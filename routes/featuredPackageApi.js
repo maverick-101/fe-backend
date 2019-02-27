@@ -47,6 +47,21 @@ router.get('/fetch/featuredPackage-fetch', async(req, res) => {
   }
 })
 
+router.post('/fetchMany/featuredPackage-fetchMany', async(req, res) => {
+  if (!req.body.featuredPackageIds) {
+    debug.error("ERROR: No Data found in FeaturedPackage request!")
+    res.status(500).send("ERROR: No Data found in FeaturedPackage request!")
+  }
+  let data = JSON.parse(req.body.featuredPackageIds)
+  // let data = req.body   //for testing in postman
+  let reply = await FeaturedPackageLib.fetchManyFeaturedPackages(data)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No FeaturedPackage Found Or Error Fetching FeaturedPackages!')
+  }
+})
+
 // fetching FeaturedPackage by ID
 router.get('/fetchById/featuredPackage-fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
