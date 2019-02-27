@@ -154,7 +154,7 @@ router.delete('/delete/hotelResources-deleteById/:Id', async(req, res) => {
     debug.error("ERROR: No ID found in HotelResources Delete request!")
     res.status(500).send("ERROR: No ID found in HotelResources Delete request!")
   }
-  let reply = await HotelResourcesLib.deleteImageById(Id)
+  let reply = await HotelResourcesLib.deleteHotelResources()
   if (reply) {
     res.status(200).send(reply)
   } else {
