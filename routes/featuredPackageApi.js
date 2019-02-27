@@ -47,6 +47,7 @@ router.get('/fetch/featuredPackage-fetch', async(req, res) => {
   }
 })
 
+// fetching Many FeaturedPackage by Ids
 router.post('/fetchMany/featuredPackage-fetchMany', async(req, res) => {
   if (!req.body.featuredPackageIds) {
     debug.error("ERROR: No Data found in FeaturedPackage request!")

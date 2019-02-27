@@ -33,14 +33,16 @@ router.post("/save/hotelResources-save", parser.array("hotel_images"), async (re
     debug.error("ERROR: No Data found in HotelResources POST request!")
     res.status(500).send("ERROR: No Data found in HotelResources POST request!")
   } 
+  if (cloudinaryData && cloudinaryData.length) {
     gallery = await CloudinaryLib.createImages(cloudinaryData)
-    data.images = gallery
-    let reply = await HotelResourcesLib.saveImage(data)
-    if (reply) {
-      res.status(200).send('HotelResources Saved!')
-    } else {
-      res.status(500).send('ERROR: Saving HotelResources!')
-    }
+    data = await HotelResourcesLib.createHotelResourceObject(gallery, data)
+  }
+  let reply = await HotelResourcesLib.saveImage(data)
+  if (reply) {
+    res.status(200).send('HotelResources Saved!')
+  } else {
+    res.status(500).send('ERROR: Saving HotelResources!')
+  }
 })
 
 // Updating HotelResources
