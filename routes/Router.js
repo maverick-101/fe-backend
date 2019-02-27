@@ -1,12 +1,8 @@
 const debug = require("debug-levels")("Router")
 const express = require('express')
 const cors = require('cors');
-const bodyParser = require('body-parser');
 
 const app = express()
-
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
   
 const whitelist = ['https://admin.dev.saaditrips.com', 'http://localhost:8080', 'http://localhost:8081', 'http://localhost:8082', 'http://localhost:8083', 'https://dev.saaditrips.com'];
 const corsOptions = {
@@ -23,7 +19,7 @@ credentials: true,
 
 app.use(cors(corsOptions));
 
-app.use(express.json())
+app.use(express.json({limit:'50mb'}))
 
 let routerList = [
   './locationApi',
