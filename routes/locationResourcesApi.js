@@ -1,6 +1,7 @@
 const router = require('express').Router()
 let debug = require("debug-levels")("locationResourcesApi")
 const LocationResources = require('../models/LocationResources')
+const LocationResourcesLib = require('../lib/LocationResourcesLib')
 const AppConfig = require('../lib/AppConfig')
 const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
@@ -27,7 +28,11 @@ router.post("/lcoationResources/save", parser.array("gallery_images"), async (re
 	let gallery = []
 	let data = JSON.parse(req.body.locationResources)
 	// let data = req.body // for testing on postman
-  if(cloudinaryData) {
+	if (!data) {
+		debug.error("ERROR: No Data Found in LocationResources!");
+		res.send("ERROR: No Data Found in LocationResources!")
+	}
+  if(cloudinaryData && cloudinaryData.length) {
     cloudinaryData.map(picture => {
       let pictureObject = {
         public_id: picture.public_id,
@@ -35,28 +40,25 @@ router.post("/lcoationResources/save", parser.array("gallery_images"), async (re
 				type: data.image_type
       }
       gallery.push(pictureObject)
-    })
+		})
+		data = await LocationResourcesLib.createLocationResourceObject(gallery, data)
   }
-	if (!data) {
-		debug.error("ERROR: No Data Found in LocationResources!");
-		res.send("ERROR: No Data Found in LocationResources!")
-	}
-  const locationResources = new LocationResources({
-		location_id: data.location_id,
-		resource_type: data.resource_type,
-		city_id: data.city_id,
-		URL: data.URL,
-		status: data.status,
-		gallery: gallery
-	})
-  locationResources.save().then(result => {
-		debug.info('locationResources Saved Result', result)
+	if(data && data.length) {
+		for(let i = 0; i < data.length; i++) {
+			const locationResources = new LocationResources(data[i])
+			locationResources.save().then(result => {
+				debug.info('locationResources Saved Result', result)
+			})
+			.catch(error => {
+				debug.error("ERROR: Found in locationResources!", error)
+				res.send(error)
+			})
+		}
 		res.send("locationResources Saved!")
-	})
-	.catch(error => {
-    debug.error("ERROR: Found in locationResources!", error)
-    res.send(error)
-  })
+	} else {
+		res.send('ERROR: Found in locationResources!')
+	}
+  
 })
 
 // Updating locationResources

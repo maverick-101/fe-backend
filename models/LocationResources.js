@@ -6,11 +6,11 @@ let locationResourcesSchema = new Schema({
 	ID: {
 		type: Number,
 		unique:true
-	},
+  },
+  LocationResources_title: String,
   location_id: Number,
   resource_type: String,
   city_id: Number,
-  URL: String,
   status: String,
   gallery:
     {
