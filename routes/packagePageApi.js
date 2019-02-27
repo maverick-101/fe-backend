@@ -47,7 +47,7 @@ router.patch("/update/packagePage-update", parser.array("gallery_images"), async
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
-  let data = JSON.parse(req.body.agentPage)
+  let data = JSON.parse(req.body.packagePage)
   // let data = req.body   //for testing in postman
 	if (!data) {
     debug.error("ERROR: No Data found in request!")
