@@ -26,12 +26,12 @@ const parser = multer({ storage: storage })
 router.post("/save/packageResources-save", parser.array("package_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
-  // if (!req.body.packageResources) {
-  //   debug.error("ERROR: No Data found in PackageResources POST request!")
-  //   res.status(500).send("ERROR: No Data found in PackageResources POST request!")
-  // }
-  // let data = JSON.parse(req.body.packageResources)
-  let data = req.body  // for test on Postman
+  if (!req.body.packageResources) {
+    debug.error("ERROR: No Data found in PackageResources POST request!")
+    res.status(500).send("ERROR: No Data found in PackageResources POST request!")
+  }
+  let data = JSON.parse(req.body.packageResources)
+  // let data = req.body  // for test on Postman
   debug.info(cloudinaryData)
   if (cloudinaryData && cloudinaryData.length) {
     gallery = await CloudinaryLib.createImages(cloudinaryData)
@@ -49,12 +49,12 @@ router.post("/save/packageResources-save", parser.array("package_images"), async
 router.patch("/update/packageResources-update", parser.array("package_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
-  // if (!req.body.packageResources) {
-  //   debug.error("ERROR: No Data found in PackageResources UPDATE request!")
-  //   res.status(500).send("ERROR: No Data found in PackageResources UPDATE request!")
-  // }
-  // let data = JSON.parse(req.body.packageResources)
-  let data = req.body   //for testing in postman
+  if (!req.body.packageResources) {
+    debug.error("ERROR: No Data found in PackageResources UPDATE request!")
+    res.status(500).send("ERROR: No Data found in PackageResources UPDATE request!")
+  }
+  let data = JSON.parse(req.body.packageResources)
+  // let data = req.body   //for testing in postman
   debug.info(cloudinaryData)
   if (cloudinaryData && cloudinaryData.length) {
     gallery = await CloudinaryLib.updateImages(data, cloudinaryData)
@@ -102,7 +102,7 @@ router.get('/fetchById/packageResources-fetchById/:Id', async(req, res) => {
 })
 
 // fetching PackageResources by package_id
-router.get('/fetchByHotelId/packageResources-fetchByHotelId/:package_id', async(req, res) => {
+router.get('/fetchByPackageId/packageResources-fetchByPackageId/:package_id', async(req, res) => {
   let package_id = req.params.package_id
   if (!package_id) {
     debug.error("ERROR: No package_id found in PackageResources fetchByHotelId request!")

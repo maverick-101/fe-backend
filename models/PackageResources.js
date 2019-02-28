@@ -8,6 +8,7 @@ const packageResourcesSchema = mongoose.Schema({
     },
   packageResources_title: String,
   package_id: Number,
+  city_id: Number,
   image_type: {
     type: String
   },
