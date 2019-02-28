@@ -14,6 +14,7 @@ const packageRatingSchema = mongoose.Schema({
 	},
   package_id: Number,
   rating: Number,
+  user_name: String,
   user_id: Number,
   created_At: Date
 },
