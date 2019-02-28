@@ -214,4 +214,27 @@ router.delete('/delete/packagePage-deleteById/:Id', async(req, res) => {
   }
 })
 
+//Delete Package Gallery by ID and Url 
+router.delete('/deleteGallery/packagePage-deleteGallery', async(req, res) => {
+  if (!req.body.packageGallery) {
+    debug.error("ERROR: No Package Gallery found in Gallery Delete request!")
+    res.status(500).send("ERROR: No Package Gallery found in Gallery Delete request!")
+  }
+  let data = JSON.parse(req.body.packageGallery)
+  // let data = req.body  // for test on Postman
+  let url = data.url
+  let ID = data.ID
+  let reply = await PackagePageLib.deletePackageGallery(ID, url)
+  if (reply) {
+    let response = await PackagePageLib.updatePackagePage(reply)
+    if (response) {
+      res.status(200).send(response)
+    } else {
+      res.status(500).send('ERROR: Updating Package Gallery!')
+    }
+  } else {
+    res.status(500).send('ERROR: No Package Found Or Error Deleting Package Gallery!')
+  }
+})
+
 module.exports = router
