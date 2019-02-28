@@ -172,6 +172,7 @@ router.delete('/delete/hotel-deleteById/:Id', async(req, res) => {
 
 //Delete image by ID and Url 
 router.delete('/deleteGallery/hotel-deleteGallery', async(req, res) => {
+  debug.info(req.body)
   if (!req.body.hotelGallery) {
     debug.error("ERROR: No Hotel Gallery found in Gallery Delete request!")
     res.status(500).send("ERROR: No Hotel Gallery found in Gallery Delete request!")

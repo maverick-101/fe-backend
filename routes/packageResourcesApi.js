@@ -1,7 +1,7 @@
 const router = require('express').Router()
-let debug = require("debug-levels")("hotelResourcesApi")
-const HotelResources = require('../models/HotelResources')
-const HotelResourcesLib = require('../lib/HotelResourcesLib')
+let debug = require("debug-levels")("packageResourcesApi")
+const PackageResources = require('../models/PackageResources')
+const PackageResourcesLib = require('../lib/PackageResourcesLib')
 const AppConfig = require('../lib/AppConfig')
 const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
@@ -16,164 +16,149 @@ cloudinary.config({
 
 const storage = cloudinaryStorage({
 	cloudinary: cloudinary,
-	folder: "hotelResources",
+	folder: "PackageResources",
 	allowedFormats: ["jpg", "png", "jpeg"],
 })
 const parser = multer({ storage: storage })
 
 
-// Saving hotelResources
-router.post("/save/hotelResources-save", parser.array("hotel_images"), async (req, res) => {
+// Saving packageResources
+router.post("/save/packageResources-save", parser.array("package_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
+  // if (!req.body.packageResources) {
+  //   debug.error("ERROR: No Data found in PackageResources POST request!")
+  //   res.status(500).send("ERROR: No Data found in PackageResources POST request!")
+  // }
+  // let data = JSON.parse(req.body.packageResources)
+  let data = req.body  // for test on Postman
   debug.info(cloudinaryData)
-  let data = JSON.parse(req.body.hotelResources)
-  // let data = req.body  // for test on Postman
-	if (!data) {
-    debug.error("ERROR: No Data found in HotelResources POST request!")
-    res.status(500).send("ERROR: No Data found in HotelResources POST request!")
-  } 
   if (cloudinaryData && cloudinaryData.length) {
     gallery = await CloudinaryLib.createImages(cloudinaryData)
-    data = await HotelResourcesLib.createHotelResourceObject(gallery, data)
+    data = await PackageResourcesLib.createPackageResourceObject(gallery, data)
   }
-  let reply = await HotelResourcesLib.saveImage(data)
+  let reply = await PackageResourcesLib.savePackageResources(data)
   if (reply) {
-    res.status(200).send('HotelResources Saved!')
+    res.status(200).send('PackageResources Saved!')
   } else {
-    res.status(500).send('ERROR: Saving HotelResources!')
+    res.status(500).send('ERROR: Saving PackageResources!')
   }
 })
 
-// Updating HotelResources
-router.patch("/update/hotelResources-update", parser.array("hotel_images"), async (req, res) => {
+// Updating PackageResources
+router.patch("/update/packageResources-update", parser.array("package_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
+  // if (!req.body.packageResources) {
+  //   debug.error("ERROR: No Data found in PackageResources UPDATE request!")
+  //   res.status(500).send("ERROR: No Data found in PackageResources UPDATE request!")
+  // }
+  // let data = JSON.parse(req.body.packageResources)
+  let data = req.body   //for testing in postman
   debug.info(cloudinaryData)
-  let data = JSON.parse(req.body.hotelResources)
-  // let data = req .body   //for testing in postman
-	if (!data) {
-    debug.error("ERROR: No Data found in HotelResources UPDATE request!")
-    res.status(500).send("ERROR: No Data found in HotelResources UPDATE request!")
-  }
   if (cloudinaryData && cloudinaryData.length) {
     gallery = await CloudinaryLib.updateImages(data, cloudinaryData)
     data.images = gallery
     delete data.image_type
-    let reply = await HotelResourcesLib.updateImage(data)
+    let reply = await PackageResourcesLib.updatePackageResources(data)
     if (reply) {
-      res.status(200).send('HotelResources Updated!')
+      res.status(200).send('PackageResources Updated!')
     } else {
-      res.status(500).send('ERROR: No ID Found or Error Updating HotelResources!')
+      res.status(500).send('ERROR: No ID Found or Error Updating PackageResources!')
     }
   } else {
-    let reply = await HotelResourcesLib.updateImage(data)
+    let reply = await PackageResourcesLib.updatePackageResources(data)
     if (reply) {
-      res.status(200).send('HotelResources Updated!')
+      res.status(200).send('PackageResources Updated!')
     } else {
-      res.status(500).send('ERROR: No ID Found or Error Updating HotelResources!')
+      res.status(500).send('ERROR: No ID Found or Error Updating PackageResources!')
     }
   }
 })
 
-// fetching all HotelResources
-router.get('/fetch/hotelResources-fetch', async(req, res) => {
-  let reply = await HotelResourcesLib.fetchAllImages()
+// fetching all PackageResources
+router.get('/fetch/packageResources-fetch', async(req, res) => {
+  let reply = await PackageResourcesLib.fetchAllPackageResources()
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No HotelResources Found Or Error Fetching HotelResources!')
+    res.status(500).send('ERROR: No PackageResources Found Or Error Fetching PackageResources!')
   }
 })
 
-// fetching HotelResources by ID
-router.get('/fetchById/hotelResources-fetchById/:Id', async(req, res) => {
+// fetching PackageResources by ID
+router.get('/fetchById/packageResources-fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
   if (!Id) {
-    debug.error("ERROR: No ID found in HotelResources FetchByID request!")
-    res.status(500).send("ERROR: No ID found in HotelResources FetchByID request!")
+    debug.error("ERROR: No ID found in PackageResources FetchByID request!")
+    res.status(500).send("ERROR: No ID found in PackageResources FetchByID request!")
   }
-  let reply = await HotelResourcesLib.findImageById(Id)
+  let reply = await PackageResourcesLib.findPackageResourceById(Id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No HotelResources Found Or Error Fetching HotelResources By ID!')
+    res.status(500).send('ERROR: No PackageResources Found Or Error Fetching PackageResources By ID!')
   }
 })
 
-// fetching HotelResources by hotel_id
-router.get('/fetchByHotelId/hotelResources-fetchByHotelId/:hotel_id', async(req, res) => {
-  let hotel_id = req.params.hotel_id
-  if (!hotel_id) {
-    debug.error("ERROR: No hotel_id found in HotelResources fetchByHotelId request!")
-    res.status(500).send("ERROR: No hotel_id found in HotelResources fetchByHotelId request!")
+// fetching PackageResources by package_id
+router.get('/fetchByHotelId/packageResources-fetchByHotelId/:package_id', async(req, res) => {
+  let package_id = req.params.package_id
+  if (!package_id) {
+    debug.error("ERROR: No package_id found in PackageResources fetchByHotelId request!")
+    res.status(500).send("ERROR: No package_id found in PackageResources fetchByHotelId request!")
   }
-  let reply = await HotelResourcesLib.findImageByHotelId(hotel_id)
+  let reply = await PackageResourcesLib.findPackageResourceByPackageId(package_id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No HotelResources Found Or Error Fetching HotelResources By fetchByHotelId!')
+    res.status(500).send('ERROR: No PackageResources Found Or Error Fetching PackageResources By fetchByHotelId!')
   }
 })
 
-//fetching HotelResources by Type
-router.get('/fetchByType/hotelResources-fetchByType/:image_type', async(req, res) => {
+//fetching PackageResources by Type
+router.get('/fetchByType/packageResources-fetchByType/:image_type', async(req, res) => {
   let image_type = req.params.image_type
   if (!image_type ) {
-    debug.error("ERROR: No image_type found in HotelResources fetchByType  request!")
-    res.status(500).send("ERROR: No image_type found in HotelResources fetchByType  request!")
+    debug.error("ERROR: No image_type found in PackageResources fetchByType  request!")
+    res.status(500).send("ERROR: No image_type found in PackageResources fetchByType  request!")
   }
-  let reply = await HotelResourcesLib.findImageByType(image_type)
+  let reply = await PackageResourcesLib.findPackageResourceByType(image_type)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No HotelResources Found Or Error Fetching HotelResources By image_type!')
+    res.status(500).send('ERROR: No PackageResources Found Or Error Fetching PackageResources By image_type!')
   }
 })
 
-//fetching all HotelResources by fetchByTypeAndHotelId
-router.get('/fetchByTypeAndHotelId/hotelResources-fetchByType/:image_type/fetchByHotelId/:hotel_id', async(req, res) => {
+//fetching all PackageResources by fetchByTypeAndHotelId
+router.get('/fetchByTypeAndHotelId/packageResources-fetchByType/:image_type/fetchByPackageId/:package_id', async(req, res) => {
   let image_type = req.params.image_type
-  let hotel_id = req.params.hotel_id
-  if (!image_type || !hotel_id ) {
-    debug.error("ERROR: No Data found in HotelResources FetchByProvince request!")
-    res.status(500).send("ERROR: No Data found in HotelResources FetchByProvince request!")
+  let package_id = req.params.package_id
+  if (!image_type || !package_id ) {
+    debug.error("ERROR: No Data found in PackageResources FetchByProvince request!")
+    res.status(500).send("ERROR: No Data found in PackageResources FetchByProvince request!")
   }
-  let reply = await HotelResourcesLib.findImageByTypeAndHotelId(image_type, hotel_id)
+  let reply = await PackageResourcesLib.findPackageResourceByTypeAndPackageId(image_type, package_id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No HotelResources Found Or Error Fetching HotelResources By fetchByTypeAndHotelId!')
+    res.status(500).send('ERROR: No PackageResources Found Or Error Fetching PackageResources By fetchByTypeAndPackageId!')
   }
 })
 
-//Delete HotelResources by ID 
-router.delete('/delete/hotelResources-deleteById/:Id', async(req, res) => {
+//Delete PackageResources by ID 
+router.delete('/delete/packageResources-deleteById/:Id', async(req, res) => {
   let Id = req.params.Id
   if (!Id) {
-    debug.error("ERROR: No ID found in HotelResources Delete request!")
-    res.status(500).send("ERROR: No ID found in HotelResources Delete request!")
+    debug.error("ERROR: No ID found in PackageResources Delete request!")
+    res.status(500).send("ERROR: No ID found in PackageResources Delete request!")
   }
-  let reply = await HotelResourcesLib.deleteImageById(Id)
+  let reply = await PackageResourcesLib.deletePackageResourceById(Id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No HotelResources Found Or Deleting HotelResources!')
-  }
-})
-
-//Delete image by public_id 
-router.delete('/delete/Image-deleteByPublicId/:public_id', async(req, res) => {
-  let public_id = req.params.public_id
-  if (!public_id) {
-    debug.error("ERROR: No public_id found in Image Delete request!")
-    res.status(500).send("ERROR: No public_id found in Image Delete request!")
-  }
-  let reply = await CloudinaryLib.deleteSingleImage(public_id)
-  if (reply) {
-    res.status(200).send(reply)
-  } else {
-    res.status(500).send('ERROR: No Image Found Or Deleting Image!')
+    res.status(500).send('ERROR: No PackageResources Found Or Deleting PackageResources!')
   }
 })
 
