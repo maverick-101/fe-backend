@@ -83,6 +83,16 @@ router.get('/fetch/locations-fetch', async(req, res) => {
   }
 })
 
+//fetching all locations
+router.get('/fetchEightRandom/locations-fetchEightRandom', async(req, res) => {
+  let reply = await LocationLib.findEightRandomLocations()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No location Found Or Error Fetching locations!')
+  }
+})
+
 //fetching all recommended locations
 router.get('/fetchRecommended/locations-fetchRecommended', async(req, res) => {
   let reply = await LocationLib.fetchAllRecommendedLocations()

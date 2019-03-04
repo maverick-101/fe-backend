@@ -47,6 +47,16 @@ router.get('/fetch/featuredPackage-fetch', async(req, res) => {
   }
 })
 
+// fetching 8 Random FeaturedPackage
+router.get('/fetchEightRandom/featuredPackage-fetchEightRandom', async(req, res) => {
+  let reply = await FeaturedPackageLib.findEightRandomFeaturedPackages()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No FeaturedPackage Found Or Error Fetching FeaturedPackages!')
+  }
+})
+
 // fetching Many FeaturedPackage by Ids
 router.post('/fetchMany/featuredPackage-fetchMany', async(req, res) => {
   if (!req.body.featuredPackageIds) {

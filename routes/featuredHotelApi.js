@@ -47,6 +47,16 @@ router.get('/fetch/featuredHotel-fetch', async(req, res) => {
   }
 })
 
+// fetching 3 Random FeaturedHotel
+router.get('/fetchThreeRandom/featuredHotel-fetchThreeRandom', async(req, res) => {
+  let reply = await FeaturedHotelLib.findThreeRandomFeaturedHotels()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No FeaturedHotel Found Or Error Fetching FeaturedHotels!')
+  }
+})
+
 // fetching FeaturedHotel by ID
 router.get('/fetchById/featuredHotel-fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
