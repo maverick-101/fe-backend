@@ -95,6 +95,16 @@ router.get('/hotel/fetch', async(req, res) => {
   }
 })
 
+//fetching 8 Random hotels
+router.get('/hotel/fetch-EightHotels', async(req, res) => {
+  let reply = await HotelLib.findEightRandomHotels()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Hotel Found Or Error Fetching Hotels!')
+  }
+})
+
 // fetching hotels by ID
 router.get('/hotel/fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
