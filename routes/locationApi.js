@@ -75,7 +75,7 @@ router.patch("/update/location-update", parser.array("gallery_images"), async (r
 
 //fetching all locations
 router.get('/fetch/locations-fetch', async(req, res) => {
-  let reply = await LocationLib.fetchAllLocations()
+  let reply = await LocationLib.fetchLocationsWithObjects()
   if (reply) {
     res.status(200).send(reply)
   } else {
