@@ -5,7 +5,8 @@ const hotelContactSchema = mongoose.Schema({
 	ID:{
     	type: Number,
       unique:true
-  	},
+    },
+  hotel_id: Number,
   room_id: Number,
   persons: Number,
   start_date: Date,

@@ -85,6 +85,21 @@ router.get('/fetchByRoomId/hotelContact-fetchByRoomId/:room_id', async(req, res)
   }
 })
 
+// fetching hotelContact by Hotel_ID
+router.get('/fetchByHotelId/hotelContact-fetchByHotelId/:hotel_id', async(req, res) => {
+  let hotel_id = req.params.hotel_id
+  if (!hotel_id) {
+    debug.error("ERROR: No hotel_id found in HotelContact request!")
+    res.status(500).send("ERROR: No hotel_id found in HotelContact request!")
+  }
+  let reply = await hotelContactLib.findHotelContactByHotelID(hotel_id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No HotelContact Found Or Error Fetching HotelContact By hotel_id!')
+  }
+})
+
 // fetching hotelContact by User_ID
 router.get('/fetchByUserId/hotelContact-fetchByUserId/:user_id', async(req, res) => {
   let user_id = req.params.user_id
