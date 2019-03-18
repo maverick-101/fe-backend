@@ -150,6 +150,21 @@ router.get('/hotel/fetchByEmail/:email', async(req, res) => {
   }
 })
 
+//fetching hotels by location_Id
+router.get('/hotel/fetchByLocation/:location_Id', async(req, res) => {
+  let location_Id = req.params.location_Id
+  if (!location_Id ) {
+    debug.error("ERROR: No location_Id found in Hotel request!")
+    res.status(500).send("ERROR: No location_Id found in Hotel request!")
+  }
+  let reply = await HotelLib.findHotelByLocation(location_Id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Hotel Found Or Error Fetching Hotel By location_Id!')
+  }
+})
+
 //fetching hotels by phone
 router.get('/hotel/fetchByPhone/:phone', async(req, res) => {
   let phone = req.params.phone
