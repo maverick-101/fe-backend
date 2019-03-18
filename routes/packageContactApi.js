@@ -2,10 +2,11 @@ const router = require('express').Router()
 let debug = require("debug-levels")("packageContactApi")
 const PackageContact = require('../models/PackageContact')
 const packageContactLib = require('../lib/PackageContactLib')
+const checkAuth = require('../middleware/check-auth')
 
 
 // Saving packageContact
-router.post("/save/packageContact-save", async (req, res) => {
+router.post("/save/packageContact-save", checkAuth, async (req, res) => {
   let data = JSON.parse(req.body.packageContact)
   // let data = req.body  // for test on Postman
 	if (!data) {
@@ -21,7 +22,7 @@ router.post("/save/packageContact-save", async (req, res) => {
 })
 
 // Updating packageContact
-router.patch("/update/packageContact-update", async (req, res) => {
+router.patch("/update/packageContact-update", checkAuth, async (req, res) => {
   let data = JSON.parse(req.body.packageContact)
   // let data = req.body   //for testing in postman
 	if (!data) {

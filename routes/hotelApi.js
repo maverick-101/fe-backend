@@ -7,6 +7,7 @@ const HotelLib = require('../lib/HotelLib')
 const multer  = require('multer')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
+const checkAuth = require('../middleware/check-auth')
 
 cloudinary.config({ 
   cloud_name: AppConfig.cloudinaryName, 
@@ -22,7 +23,7 @@ const storage = cloudinaryStorage({
 const parser = multer({ storage: storage })
 
 // saving hotels
-router.post("/hotel/save", parser.array("gallery_images"), async (req, res) => {
+router.post("/hotel/save", checkAuth, parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
@@ -49,7 +50,7 @@ router.post("/hotel/save", parser.array("gallery_images"), async (req, res) => {
 })
 
 // Updating hotels
-router.patch("/hotel/update", parser.array("gallery_images"), async (req, res) => {
+router.patch("/hotel/update", checkAuth, parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)

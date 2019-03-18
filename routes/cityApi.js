@@ -45,7 +45,7 @@ router.post("/save/city-save", checkAuth, parser.array("gallery_images"), async 
 })
 
 // Updating Cities
-router.patch("/update/city-update", parser.array("gallery_images"), async (req, res) => {
+router.patch("/update/city-update", checkAuth, parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)

@@ -6,6 +6,8 @@ const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
+const checkAuth = require('../middleware/check-auth')
+
 
 cloudinary.config({ 
   cloud_name: 'saaditrips', 
@@ -22,7 +24,7 @@ const parser = multer({ storage: storage })
 
 
 // Saving CoverBanner
-router.post("/coverbanner/save", parser.single("image"), async (req, res) => {
+router.post("/coverbanner/save", checkAuth, parser.single("image"), async (req, res) => {
   let image = req.file
   let imageData = {}
   debug.info(image)
@@ -51,7 +53,7 @@ router.post("/coverbanner/save", parser.single("image"), async (req, res) => {
 })
 
 // Updating CoverBanner
-router.patch("/coverbanner/update", parser.single("image"), async (req, res) => {
+router.patch("/coverbanner/update", checkAuth, parser.single("image"), async (req, res) => {
   let image = req.file
   let data = JSON.parse(req.body.coverBanner)
 	if (!data) {
