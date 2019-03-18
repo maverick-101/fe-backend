@@ -8,13 +8,13 @@ var jwt = require('jsonwebtoken')
 router.post("/login", async (req, res) => {
   let email = req.body.email
   let password = req.body.password
-  if (password === "saadiTrips12345" && email === "saadiTrips@gmail.com") {
+  if (password === AppConfig.PASSWORD && email === AppConfig.EMAIL) {
     const user = {
       id: 1,
-      username: "saadiTrips",
-      email: "saadiTrips@gmail.com"
+      username: AppConfig.cloudinaryName,
+      email: AppConfig.EMAIL
     }
-    jwt.sign({user: user}, 'secret', (err, token)=> {
+    jwt.sign({user: user}, AppConfig.JWT_KEY, (err, token)=> {
       res.json({
         token
       })
