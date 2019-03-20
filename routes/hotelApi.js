@@ -87,7 +87,13 @@ router.patch("/hotel/update", parser.array("gallery_images"), async (req, res) =
 
 //fetching all hotels
 router.get('/hotel/fetch', async(req, res) => {
-  let reply = await HotelLib.fetchAllHotels()
+  if(!req.query.pageSize || !req.query.pageNumber) {
+    debug.error("ERROR: No Query Strings found in Hotel request!")
+    res.status(500).send("ERROR: No Query Strings found in Hotel request!")
+  }
+  let pageSize = req.query.pageSize
+  let pageNumber = req.query.pageNumber
+  let reply = await HotelLib.fetchAllHotels(pageSize, pageNumber)
   if (reply) {
     res.status(200).send(reply)
   } else {
