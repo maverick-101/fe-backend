@@ -7,6 +7,7 @@ const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
+const checkAuth = require('../middleware/check-auth')
 
 cloudinary.config({ 
   cloud_name: 'saaditrips', 
@@ -22,7 +23,7 @@ const storage = cloudinaryStorage({
 const parser = multer({ storage: storage })
 
 // saving location Resources
-router.post("/lcoationResources/save", parser.array("gallery_images"), async (req, res) => {
+router.post("/lcoationResources/save", checkAuth, parser.array("gallery_images"), async (req, res) => {
 	let cloudinaryData = req.files
   debug.info(cloudinaryData)
 	let gallery = []
@@ -62,7 +63,7 @@ router.post("/lcoationResources/save", parser.array("gallery_images"), async (re
 })
 
 // Updating locationResources
-router.patch("/lcoationResources/update", parser.array("gallery_images"), async (req, res) => {
+router.patch("/lcoationResources/update", checkAuth, parser.array("gallery_images"), async (req, res) => {
 	let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)

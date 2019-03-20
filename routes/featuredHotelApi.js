@@ -3,10 +3,11 @@ let debug = require("debug-levels")("featuredHotelLibApi")
 const FeaturedHotel = require('../models/FeaturedHotel')
 const FeaturedHotelLib = require('../lib/FeaturedHotelLib')
 const AppConfig = require('../lib/AppConfig')
+const checkAuth = require('../middleware/check-auth')
 
 
 // Saving FeaturedHotel
-router.post("/save/featuredHotel-save", async (req, res) => {
+router.post("/save/featuredHotel-save", checkAuth, async (req, res) => {
   let data = JSON.parse(req.body.featuredHotel)
   // let data = req.body  // for test on Postman
 	if (!data) {
@@ -22,7 +23,7 @@ router.post("/save/featuredHotel-save", async (req, res) => {
 })
 
 // Updating FeaturedHotel
-router.patch("/update/featuredHotel-update", async (req, res) => {
+router.patch("/update/featuredHotel-update", checkAuth, async (req, res) => {
   let data = JSON.parse(req.body.featuredHotel)
   // let data = req.body   //for testing in postman
 	if (!data) {

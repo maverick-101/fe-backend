@@ -42,7 +42,8 @@ let routerList = [
   './packageResourcesApi.js',
   './experienceApi.js',
   './experienceResourcesApi',
-  './experienceRatingApi.js'
+  './experienceRatingApi.js',
+  './loginApi.js'
 ]
   
 for (let routerPath of routerList) {

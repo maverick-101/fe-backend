@@ -3,10 +3,11 @@ const FeaturedPackage = require('../models/FeaturedPackage')
 const FeaturedPackageLib = require('../lib/FeaturedPackageLib')
 const AppConfig = require('../lib/AppConfig')
 let debug = require("debug-levels")("featuredPackageLibApi")
+const checkAuth = require('../middleware/check-auth')
 
 
 // Saving featuredPackage
-router.post("/save/featuredPackage-save", async (req, res) => {
+router.post("/save/featuredPackage-save", checkAuth, async (req, res) => {
   let data = JSON.parse(req.body.featuredPackage)
   // let data = req.body  // for test on Postman
 	if (!data) {
@@ -22,7 +23,7 @@ router.post("/save/featuredPackage-save", async (req, res) => {
 })
 
 // Updating FeaturedPackage
-router.patch("/update/featuredPackage-update", async (req, res) => {
+router.patch("/update/featuredPackage-update", checkAuth, async (req, res) => {
   let data = JSON.parse(req.body.featuredPackage)
   // let data = req.body   //for testing in postman
 	if (!data) {
