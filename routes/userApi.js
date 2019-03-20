@@ -127,11 +127,8 @@ router.post("/user/signIn", async (req, res) => {
       res.status(401).send('ERROR: Auth Failed!')
     }
   }
-  const user = {
-    id: response.ID,
-    username: response.first_name,
-    email: response.email
-  }
+
+  const user = response
   jwt.sign(
     {user: user}, 
     AppConfig.JWT_KEY,

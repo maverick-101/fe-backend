@@ -12,8 +12,7 @@ module.exports = (req, res, next) => {
     }
     const token = req.headers.authorization.split(" ")[1]
     const decode = jwt.verify(token, AppConfig.JWT_KEY)
-    req.userData = decode
-    debug.info('Auth Success!')
+    req.user = decode
     next()
   } catch (error) {
     debug.info('Auth Failed!', error)
