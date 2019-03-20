@@ -8,6 +8,8 @@ const multer  = require('multer')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
 const checkAuth = require('../middleware/check-auth')
+var jwt = require('jsonwebtoken')
+
 
 cloudinary.config({ 
   cloud_name: AppConfig.cloudinaryName, 
@@ -24,7 +26,7 @@ const parser = multer({ storage: storage })
 
 
 // Saving User
-router.post("/user/save", checkAuth, parser.single("profile_picture"), async (req, res) => {
+router.post("/user/save", parser.single("profile_picture"), async (req, res) => {
 	let cloudinaryData = req.file
   let profile_picture = {}
   debug.info(cloudinaryData)
@@ -35,12 +37,18 @@ router.post("/user/save", checkAuth, parser.single("profile_picture"), async (re
     res.status(500).send("ERROR: No Data found in User request!")
   }
   profile_picture = await CloudinaryLib.createImage(cloudinaryData)
-  data.profile_picture = profile_picture
-  let reply = await UserLib.saveUser(data)
-  if (reply) {
-    res.status(200).send('User Saved!')
+  data.profile_picture = profile_picture || {}
+  data = await UserLib.bcryptPassword(data)
+  debug.error("found in User request!", data)
+  if(data) {
+    let reply = await UserLib.saveUser(data)
+    if (reply) {
+      res.status(200).send('User Saved!')
+    } else {
+      res.status(500).send('ERROR: Duplicate Field Found or Error Saving User!')
+    }
   } else {
-    res.status(500).send('ERROR: Duplicate Field Found or Error Saving User!')
+    res.status(500).send('ERROR: Adding Hash For Passowrd!')
   }
 })
 
@@ -99,6 +107,48 @@ router.patch("/user/update", checkAuth, parser.single("profile_picture"), async 
   } else {
     res.status(500).send('ERROR: No ID Found or Error Updating User!')
   }
+})
+
+// User signIn
+router.post("/user/signIn", async (req, res) => {
+  if (!req.body.user) {
+    debug.error("ERROR: No Data found in User Sign In request!")
+    res.status(500).send("ERROR: No Data found in User Sign In request!")
+  }
+  let data = JSON.parse(req.body.user)
+  // let data = req.body   //for testing in postman
+  let email = data.email
+  let password = data.password
+  let response = await UserLib.findUserByEmail(email)
+  if(response) {
+    let reply = await UserLib.bcryptComparePassword(response.password, password)
+    if(!reply) {
+      debug.info("Auth Failed!")
+      res.status(401).send('ERROR: Auth Failed!')
+    }
+  }
+  const user = {
+    id: response.ID,
+    username: response.first_name,
+    email: response.email
+  }
+  jwt.sign(
+    {user: user}, 
+    AppConfig.JWT_KEY,
+    {
+      expiresIn: "1h"
+    },
+    (err, token)=> {
+      if(err) {
+        debug.info("ERROR: Signing JWT Token!", err)
+        res.status(500).send('ERROR: Signing JWT Token!')
+      } else {
+        res.status(200).json({
+          message: 'Auth Success!',
+          Token: token
+        })
+      }
+  })
 })
 
 // fetching all Users
