@@ -15,6 +15,8 @@ const experienceSchema = mongoose.Schema({
   user_name: {
     type: String
   },
+  location_id: Number,
+  city_id: Number,
   spoken_languages: [],
   created_At: Date,
   recommended: Boolean,

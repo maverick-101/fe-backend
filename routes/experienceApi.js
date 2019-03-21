@@ -76,7 +76,9 @@ router.patch("/update/experience-update", parser.array("gallery_images"), async 
 
 // fetching all Experiences
 router.get('/fetch/experience-fetch', async(req, res) => {
-  let reply = await ExperienceLib.fetchAllExperiences()
+  let pageSize = req.query.pageSize || 10
+  let pageNumber = req.query.pageNumber || 1
+  let reply = await ExperienceLib.fetchAllExperiences(pageSize, pageNumber)
   if (reply) {
     res.status(200).send(reply)
   } else {
