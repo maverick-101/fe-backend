@@ -116,6 +116,21 @@ router.get('/fetchByUserName/experience-fetchByUserName/:user_name', async(req, 
   }
 })
 
+//fetching Experiences by location_id
+router.get('/fetchByLocation/experience-fetchByLocation/:location_id', async(req, res) => {
+  let location_id = req.params.location_id
+  if (!location_id ) {
+    debug.error("ERROR: No location_id found in Experience FetchByName  request!")
+    res.status(500).send("ERROR: No location_id found in Experience FetchByName  request!")
+  }
+  let reply = await ExperienceLib.findExperienceByLocation(location_id)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Experience Found Or Error Fetching Experience By location_id!')
+  }
+})
+
 //fetching all Recommended Experiences
 router.get('/fetchRecommended/experience-fetchRecommended', async(req, res) => {
   let reply = await ExperienceLib.findRecommendedExperiences()
