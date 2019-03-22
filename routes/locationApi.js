@@ -77,7 +77,7 @@ router.patch("/update/location-update", parser.array("gallery_images"), async (r
 router.get('/fetch/locations-fetch', async(req, res) => {
   let pageSize = req.query.pageSize || 10
   let pageNumber = req.query.pageNumber || 1
-  let reply = await LocationLib.fetchLocationsWithObjects(pageSize, pageNumber)
+  let reply = await LocationLib.fetchAllLocations (pageSize, pageNumber)
   if (reply) {
     res.status(200).send(reply)
   } else {
