@@ -126,6 +126,9 @@ router.post("/user/signIn", async (req, res) => {
       debug.info("Auth Failed!")
       res.status(401).send('ERROR: Auth Failed!')
     }
+  } else {
+    debug.info("ERROR: No User Found!")
+    res.status(500).send('ERROR: No User Found!')
   }
 
   const user = response
