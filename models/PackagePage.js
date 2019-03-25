@@ -42,16 +42,7 @@ const packagePageSchema = mongoose.Schema({
       description: String,
       status: Boolean
     }
-  ],  
-  food: [
-    {
-      food_type: String,
-      description: String,
-      start_time: String,
-      end_time: String,
-      items: []
-    }
-  ], 
+  ],
   gallery: [
     {
       public_id: String,
