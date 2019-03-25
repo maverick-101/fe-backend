@@ -36,6 +36,13 @@ const experienceSchema = mongoose.Schema({
       image_Title: String
     }
   ],
+  guest_gallery: [
+    {
+      public_id: String,
+      url: String,
+      image_Title: String
+    }
+  ],
   description: String
 },
 { versionKey: false })

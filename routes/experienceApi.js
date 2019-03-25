@@ -23,18 +23,25 @@ const parser = multer({ storage: storage })
 
 
 // Saving Experiences
-router.post("/save/experience-save", parser.array("gallery_images"), async (req, res) => {
-  let cloudinaryData = req.files
-  let gallery = []
-  debug.info(cloudinaryData)
+router.post("/save/experience-save", 
+parser.fields([{
+  name: 'gallery_images', maxCount: 10
+}, {
+  name: 'guest_photos', maxCount: 10
+}]), 
+async (req, res) => {
+  let gallery_images = req.files.gallery_images
+  let guest_photos = req.files.guest_photos
   if (!req.body.experience) {
     debug.error("ERROR: No Data found in Experience POST request!")
     res.status(500).send("ERROR: No Data found in Experience POST request!")
   }
   let data = JSON.parse(req.body.experience)
   // let data = req.body  // for test on Postman
-  gallery = await CloudinaryLib.createExperienceGallery(data, cloudinaryData)
-  data.gallery = gallery
+  let gallery = await CloudinaryLib.createExperienceGallery(data, gallery_images)
+  data.gallery = gallery || []
+  let guestGallery = await CloudinaryLib.createExperienceGuestGallery(data, guest_photos)
+  data.guest_gallery = guestGallery || []
   let reply = await ExperienceLib.saveExperience(data)
   if (reply) {
     res.status(200).send('Experience Saved!')
