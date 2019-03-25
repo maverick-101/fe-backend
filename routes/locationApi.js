@@ -165,4 +165,27 @@ router.delete('/delete/location-deleteById/:Id', async(req, res) => {
   }
 })
 
+//Delete image by ID and Url 
+router.delete('/deleteGallery/location-deleteGallery', async(req, res) => {
+  if (!req.body.locationGallery) {
+    debug.error("ERROR: No Location Gallery found in Gallery Delete request!")
+    res.status(500).send("ERROR: No Location Gallery found in Gallery Delete request!")
+  }
+  let data = JSON.parse(req.body.locationGallery)
+  // let data = req.body  // for test on Postman
+  let url = data.url
+  let ID = data.ID
+  let reply = await LocationLib.deleteLocationGallery(ID, url)
+  if (reply) {
+    let response = await LocationLib.updateLocation(reply)
+    if (response) {
+      res.status(200).send(response)
+    } else {
+      res.status(500).send('ERROR: Updating Location Gallery!')
+    }
+  } else {
+    res.status(500).send('ERROR: No Location Found Or Error Deleting Location Gallery!')
+  }
+})
+
 module.exports = router
