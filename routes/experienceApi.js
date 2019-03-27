@@ -64,12 +64,12 @@ router.patch("/update/experience-update", parser.fields([{
   }
   let data = JSON.parse(req.body.experience)
   // let data = req.body   //for testing in postman
-  if (cloudinaryData && cloudinaryData.length > 0) {
+  if (cloudinaryData) {
     let gallery_images = req.files.gallery_images
     let guest_photos = req.files.guest_photos
     let gallery = await CloudinaryLib.updateExperienceGallery(data, gallery_images)
     data.gallery = gallery || []
-    let guestGallery = await CloudinaryLib.updateExperienceGallery(data, guest_photos)
+    let guestGallery = await CloudinaryLib.updateExperienceGuestGallery(data, guest_photos)
     data.guest_gallery = guestGallery || []
     delete data.image_Title
     let reply = await ExperienceLib.updateExperience(data)

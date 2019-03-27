@@ -15,6 +15,9 @@ const experienceSchema = mongoose.Schema({
   user_name: {
     type: String
   },
+  time: String,
+  phone_number: String,
+  important_information: String,
   location_id: Number,
   city_id: Number,
   spoken_languages: [],
