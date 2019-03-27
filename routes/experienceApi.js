@@ -56,8 +56,7 @@ router.patch("/update/experience-update", parser.fields([{
 }, {
   name: 'guest_photos', maxCount: 10
 }]), async (req, res) => {
-  let gallery_images = req.files.gallery_images
-  let guest_photos = req.files.guest_photos
+  let cloudinaryData = req.files
   debug.info(cloudinaryData)
   if (!req.body.experience) {
     debug.error("ERROR: No Data found in Experience POST request!")
@@ -66,6 +65,8 @@ router.patch("/update/experience-update", parser.fields([{
   let data = JSON.parse(req.body.experience)
   // let data = req.body   //for testing in postman
   if (cloudinaryData && cloudinaryData.length > 0) {
+    let gallery_images = req.files.gallery_images
+    let guest_photos = req.files.guest_photos
     let gallery = await CloudinaryLib.updateExperienceGallery(data, gallery_images)
     data.gallery = gallery || []
     let guestGallery = await CloudinaryLib.updateExperienceGallery(data, guest_photos)
