@@ -170,4 +170,25 @@ router.delete('/delete/experience-deleteById/:Id', async(req, res) => {
   }
 })
 
+//Delete image by ID and Url 
+router.delete('/deleteGallery/experience-deleteGallery', async(req, res) => {
+  if (!req.body.experienceGallery) {
+    debug.error("ERROR: No Experience Gallery found in Gallery Delete request!")
+    res.status(500).send("ERROR: No Experience Gallery found in Gallery Delete request!")
+  }
+  let data = JSON.parse(req.body.experienceGallery)
+  // let data = req.body  // for test on Postman
+  let reply = await ExperienceLib.deleteExperienceGallery(data)
+  if (reply) {
+    let response = await ExperienceLib.updateExperience(reply)
+    if (response) {
+      res.status(200).send(response)
+    } else {
+      res.status(500).send('ERROR: Updating Experience Gallery!')
+    }
+  } else {
+    res.status(500).send('ERROR: No Experience Found Or Error Deleting Experience Gallery!')
+  }
+})
+
 module.exports = router
