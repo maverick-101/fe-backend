@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const app = express()
   
-const whitelist = ['https://admin.dev.saaditrips.com', 'http://localhost:8080', 'http://localhost:8081', 'http://localhost:8082', 'http://localhost:8083', 'https://dev.saaditrips.com'];
+const whitelist = ['https://admin.dev.saaditrips.com', 'https://admindev.saaditrips.com/hotels', 'http://localhost:8080', 'http://localhost:8081', 'http://localhost:8082', 'http://localhost:8083', 'http://localhost:8084', 'https://dev.saaditrips.com'];
 const corsOptions = {
 origin(origin, callback) {
   console.log('---------------------------------\n origin: ', origin, '\n---------------------------------');
