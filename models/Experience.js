@@ -27,6 +27,7 @@ const experienceSchema = mongoose.Schema({
     }
   ],
   star_rating: Number,
+  review_count: Number,
   gallery: [
     {
       public_id: String,

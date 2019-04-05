@@ -50,6 +50,8 @@ router.patch("/update/packageRating-update", async (req, res) => {
     if (reply) {
       let response = await PackageRatingLib.aggregatePackageRating(data.package_id)
       if(response) {
+        let repl = await PackageRatingLib.getReviewCount(data.package_id)
+        debug.info(repl)
         let updatePackage = await PackageRatingLib.updatePackageData(response)
         if(updatePackage) {
           res.status(200).send('PackageRating Updated And Package Updated!')
