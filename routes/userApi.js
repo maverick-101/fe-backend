@@ -152,6 +152,15 @@ router.post("/user/signIn", async (req, res) => {
 })
 
 // fetching all Users
+router.get('/user/me', checkAuth, async(req, res) => {
+  if(!req.user) {
+    res.status(500).send('ERROR: No User Found Or Error Decoding User!')
+  } else {
+    res.status(200).send(req.user)
+  }
+})
+
+// fetching all Users
 router.get('/user/fetch', async(req, res) => {
   let reply = await UserLib.fetchAllUsers()
   if (reply) {
