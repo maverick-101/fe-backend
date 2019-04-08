@@ -20,7 +20,8 @@ router.post("/save/packageRating-save", async (req, res) => {
     if (reply) {
       let response = await PackageRatingLib.aggregatePackageRating(data.package_id)
       if(response) {
-        let updatePackage = await PackageRatingLib.updatePackageData(response)
+        let review_count = await PackageRatingLib.getreview_count(data.package_id)
+        let updatePackage = await PackageRatingLib.updatePackageData(response, review_count)
         if(updatePackage) {
           res.status(200).send('PackageRating Saved And Package Updated!')
         } else {
@@ -50,7 +51,8 @@ router.patch("/update/packageRating-update", async (req, res) => {
     if (reply) {
       let response = await PackageRatingLib.aggregatePackageRating(data.package_id)
       if(response) {
-        let updatePackage = await PackageRatingLib.updatePackageData(response)
+        let review_count = await PackageRatingLib.getreview_count(data.package_id)
+        let updatePackage = await PackageRatingLib.updatePackageData(response, review_count)
         if(updatePackage) {
           res.status(200).send('PackageRating Updated And Package Updated!')
         } else {

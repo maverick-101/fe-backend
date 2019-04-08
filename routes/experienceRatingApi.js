@@ -20,7 +20,8 @@ router.post("/save/experienceRating-save", async (req, res) => {
     if (reply) {
       let response = await ExperienceRatingLib.aggregateExperienceRating(data.experience_id)
       if(response) {
-        let updateExperience = await ExperienceRatingLib.updateExperienceData(response)
+        let review_count = await ExperienceRatingLib.getreview_count(data.experience_id)
+        let updateExperience = await ExperienceRatingLib.updateExperienceData(response, review_count)
         if(updateExperience) {
           res.status(200).send('ExperienceRating Saved And Experience Updated!')
         } else {
@@ -50,7 +51,8 @@ router.patch("/update/experienceRating-update", async (req, res) => {
     if (reply) {
       let response = await ExperienceRatingLib.aggregateExperienceRating(data.experience_id)
       if(response) {
-        let updateExperience = await ExperienceRatingLib.updateExperienceData(response)
+        let review_count = await ExperienceRatingLib.getreview_count(data.experience_id)
+        let updateExperience = await ExperienceRatingLib.updateExperienceData(response, review_count)
         if(updateExperience) {
           res.status(200).send('ExperienceRating Updated And Experience Updated!')
         } else {

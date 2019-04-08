@@ -34,6 +34,7 @@ const experienceSchema = mongoose.Schema({
       image_Title: String
     }
   ],
+  review_count: Number,
   description: String
 },
 { versionKey: false })

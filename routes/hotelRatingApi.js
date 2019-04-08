@@ -20,7 +20,8 @@ router.post("/save/hotelRating-save", async (req, res) => {
     if (reply) {
       let response = await HotelRatingLib.aggregateHotelRating(data.hotel_id)
       if(response) {
-        let updateHotel = await HotelRatingLib.updateHotelData(response)
+        let review_count = await HotelRatingLib.getreview_count(data.hotel_id)
+        let updateHotel = await HotelRatingLib.updateHotelData(response, review_count)
         if(updateHotel) {
           res.status(200).send('HotelRating Saved And Hotel Updated!')
         } else {
@@ -50,7 +51,8 @@ router.patch("/update/hotelRating-update", async (req, res) => {
     if (reply) {
       let response = await HotelRatingLib.aggregateHotelRating(data.hotel_id)
       if(response) {
-        let updateHotel = await HotelRatingLib.updateHotelData(response)
+        let review_count = await HotelRatingLib.getreview_count(data.hotel_id)
+        let updateHotel = await HotelRatingLib.updateHotelData(response, review_count)
         if(updateHotel) {
           res.status(200).send('HotelRating Updated And Hotel Updated!')
         } else {

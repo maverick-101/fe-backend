@@ -77,6 +77,7 @@ const hotelSchema = mongoose.Schema({
       type: Number,
       unique:true
     },
+    review_count: Number,
     latitude: String,
     longitude: String,
     hotel_amenities: []
