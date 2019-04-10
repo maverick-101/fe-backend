@@ -76,7 +76,9 @@ router.patch("/update/location-update", checkAuth, parser.array("gallery_images"
 
 //fetching all locations
 router.get('/fetch/locations-fetch', async(req, res) => {
-  let reply = await LocationLib.fetchLocationsWithObjects()
+  let pageSize = req.query.pageSize || 10
+  let pageNumber = req.query.pageNumber || 1
+  let reply = await LocationLib.fetchAllLocations (pageSize, pageNumber)
   if (reply) {
     res.status(200).send(reply)
   } else {
@@ -161,6 +163,29 @@ router.delete('/delete/location-deleteById/:Id', async(req, res) => {
     res.status(200).send(reply)
   } else {
     res.status(500).send('ERROR: No location Found Or Error Deleting location!')
+  }
+})
+
+//Delete image by ID and Url 
+router.delete('/deleteGallery/location-deleteGallery', async(req, res) => {
+  if (!req.body.locationGallery) {
+    debug.error("ERROR: No Location Gallery found in Gallery Delete request!")
+    res.status(500).send("ERROR: No Location Gallery found in Gallery Delete request!")
+  }
+  let data = JSON.parse(req.body.locationGallery)
+  // let data = req.body  // for test on Postman
+  let url = data.url
+  let ID = data.ID
+  let reply = await LocationLib.deleteLocationGallery(ID, url)
+  if (reply) {
+    let response = await LocationLib.updateLocation(reply)
+    if (response) {
+      res.status(200).send(response)
+    } else {
+      res.status(500).send('ERROR: Updating Location Gallery!')
+    }
+  } else {
+    res.status(500).send('ERROR: No Location Found Or Error Deleting Location Gallery!')
   }
 })
 
