@@ -28,6 +28,7 @@ const eventSchema = mongoose.Schema({
   city_id: Number,
   Address: String,
   why_list: String,
+  recommended: Boolean,
   created_At: Date
 },
 { versionKey: false })

@@ -1,8 +1,9 @@
 const router = require('express').Router()
-let debug = require("debug-levels")("experienceApi")
-const Experience = require('../models/Experience')
-const ExperienceLib = require('../lib/ExperienceLib')
+let debug = require("debug-levels")("eventApi")
+const Event = require('../models/Event')
+const EventLib = require('../lib/EventLib')
 const AppConfig = require('../lib/AppConfig')
+const GLobalLib = require('../lib/GLobalLib')
 const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
 const cloudinary = require('cloudinary')
@@ -17,126 +18,173 @@ cloudinary.config({
 
 const storage = cloudinaryStorage({
 	cloudinary: cloudinary,
-	folder: "Experiences",
+	folder: "Events",
 	allowedFormats: ["jpg", "png", "jpeg"],
 })
 const parser = multer({ storage: storage })
 
 
-// Saving Experiences
-router.post("/save/experience-save", checkAuth, parser.array("gallery_images"), async (req, res) => {
+// Saving Events
+router.post("/save/event-save", checkAuth, parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
-  debug.info(cloudinaryData)
-  if (!req.body.experience) {
-    debug.error("ERROR: No Data found in Experience POST request!")
-    res.status(500).send("ERROR: No Data found in Experience POST request!")
-  }
-  let data = JSON.parse(req.body.experience)
-  // let data = req.body  // for test on Postman
-  gallery = await CloudinaryLib.createExperienceGallery(data, cloudinaryData)
+  // debug.info(cloudinaryData)
+  // if (!req.body.event) {
+  //   debug.error("ERROR: No Data found in Event POST request!")
+  //   res.status(500).send("ERROR: No Data found in Event POST request!")
+  // }
+  // let data = JSON.parse(req.body.event)
+  let data = req.body  // for test on Postman
+  gallery = await CloudinaryLib.createGallery(data, cloudinaryData)
   data.gallery = gallery
-  let reply = await ExperienceLib.saveExperience(data)
+  let reply = await EventLib.saveEvent(data)
   if (reply) {
-    res.status(200).send('Experience Saved!')
+    res.status(200).send('Event Saved!')
   } else {
-    res.status(500).send('ERROR: Duplicate Field Found or Error Saving Experience!')
+    res.status(500).send('ERROR: Duplicate Field Found or Error Saving Event!')
   }
 })
 
-// Updating Experiences
-router.patch("/update/experience-update", checkAuth, parser.array("gallery_images"), async (req, res) => {
+// Updating Events
+router.patch("/update/event-update", checkAuth, parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
-  if (!req.body.experience) {
-    debug.error("ERROR: No Data found in Experience POST request!")
-    res.status(500).send("ERROR: No Data found in Experience POST request!")
-  }
-  let data = JSON.parse(req.body.experience)
-  // let data = req.body   //for testing in postman
+  // if (!req.body.event) {
+  //   debug.error("ERROR: No Data found in Event POST request!")
+  //   res.status(500).send("ERROR: No Data found in Event POST request!")
+  // }
+  // let data = JSON.parse(req.body.event)
+  let data = req.body   //for testing in postman
   if (cloudinaryData && cloudinaryData.length > 0) {
-    gallery = await CloudinaryLib.updateExperienceGallery(data, cloudinaryData)
+    gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
     data.gallery = gallery
     delete data.image_Title
-    let reply = await ExperienceLib.updateExperience(data)
+    let reply = await EventLib.updateEvent(data)
     if (reply) {
-      res.status(200).send('Experience Updated!')
+      res.status(200).send('Event Updated!')
     } else {
-      res.status(500).send('ERROR: No ID Found or Error Updating Experience!')
+      res.status(500).send('ERROR: No ID Found or Error Updating Event!')
     }
   } else {
-    let reply = await ExperienceLib.updateExperience(data)
+    let reply = await EventLib.updateEvent(data)
     if (reply) {
-      res.status(200).send('Experience Updated!')
+      res.status(200).send('Event Updated!')
     } else {
-      res.status(500).send('ERROR: No ID Found or Error Updating Experience!')
+      res.status(500).send('ERROR: No ID Found or Error Updating Event!')
     }
   }
 })
 
-// fetching all Experiences
-router.get('/fetch/experience-fetch', async(req, res) => {
-  let reply = await ExperienceLib.fetchAllExperiences()
+// fetching all Events
+router.get('/fetch/event-fetch', async(req, res) => {
+  let reply = await EventLib.fetchAllEvents()
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No Experience Found Or Error Fetching Experiences!')
+    res.status(500).send('ERROR: No Event Found Or Error Fetching Events!')
   }
 })
 
-// fetching Experiences by ID
-router.get('/fetchById/experience-fetchById/:Id', async(req, res) => {
+// fetching Events by ID
+router.get('/fetchById/event-fetchById/:Id', async(req, res) => {
   let Id = req.params.Id
   if (!Id) {
-    debug.error("ERROR: No ID found in Experience FetchByID request!")
-    res.status(500).send("ERROR: No ID found in Experience FetchByID request!")
+    debug.error("ERROR: No ID found in Event FetchByID request!")
+    res.status(500).send("ERROR: No ID found in Event FetchByID request!")
   }
-  let reply = await ExperienceLib.findExperienceById(Id)
+  let reply = await EventLib.findEventById(Id)
+  reply = await GLobalLib.getObject(reply) || {}
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No Experience Found Or Error Fetching Experience By ID!')
+    res.status(500).send('ERROR: No Event Found Or Error Fetching Event By ID!')
   }
 })
 
-//fetching Experiences by User Name
-router.get('/fetchByUserName/experience-fetchByUserName/:user_name', async(req, res) => {
-  let user_name = req.params.user_name
-  if (!user_name ) {
-    debug.error("ERROR: No user_name found in Experience FetchByName  request!")
-    res.status(500).send("ERROR: No user_name found in Experience FetchByName  request!")
+// fetching Events by city_id
+router.get('/fetchByCity/event-fetchByCity/:city_id', async(req, res) => {
+  let city_id = req.params.city_id
+  if (!city_id) {
+    debug.error("ERROR: No city_id found in Event fetchByCityId request!")
+    res.status(500).send("ERROR: No city_id found in Event fetchByCityId request!")
   }
-  let reply = await ExperienceLib.findExperienceByUserName(user_name)
+  let reply = await EventLib.findEventByCity(city_id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No Experience Found Or Error Fetching Experience By user_name!')
+    res.status(500).send('ERROR: No Event Found Or Error Fetching Event By city_id!')
   }
 })
 
-//fetching all Recommended Experiences
-router.get('/fetchRecommended/experience-fetchRecommended', async(req, res) => {
-  let reply = await ExperienceLib.findRecommendedExperiences()
+// fetching Events by location_id
+router.get('/fetchByLocation/event-fetchByLocation/:location_id', async(req, res) => {
+  let location_id = req.params.location_id
+  if (!location_id) {
+    debug.error("ERROR: No location_id found in Event fetchByLocation request!")
+    res.status(500).send("ERROR: No location_id found in Event fetchByLocation request!")
+  }
+  let reply = await EventLib.findEventByLocation(location_id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No Experience Found Or Error Fetching Experience By Recommended!')
+    res.status(500).send('ERROR: No Event Found Or Error Fetching Event By location_id!')
   }
 })
 
-//Delete  by ID Experience
-router.delete('/delete/experience-deleteById/:Id', async(req, res) => {
+// fetching Events by date
+router.get('/fetchByDate/event-fetchDate/:start_date/:end_start', async(req, res) => {
+  let start_date = req.params.start_date
+  let end_start = req.params.end_start
+  if (!start_date || !end_start) {
+    debug.error("ERROR: No Date found in Event fetchByDate request!")
+    res.status(500).send("ERROR: No Date found in Event fetchByDate request!")
+  }
+  let reply = await EventLib.findEventByDate(start_date, end_start)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Event Found Or Error Fetching Event By ID!')
+  }
+})
+
+//fetching Events by Title
+router.get('/fetchByTitle/event-fetchByTitle/:title', async(req, res) => {
+  let title = req.params.title
+  if (!title ) {
+    debug.error("ERROR: No title found in Event fetchByTitle  request!")
+    res.status(500).send("ERROR: No title found in Event fetchByTitle  request!")
+  }
+  let reply = await EventLib.findEventByTitle(title)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Event Found Or Error Fetching Event By title!')
+  }
+})
+
+//fetching all Recommended Events
+router.get('/fetchRecommended/event-fetchRecommended', async(req, res) => {
+  let reply = await EventLib.findRecommendedEvents()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Event Found Or Error Fetching Event By Recommended!')
+  }
+})
+
+//Delete  by ID Event
+router.delete('/delete/event-deleteById/:Id', async(req, res) => {
   let Id = req.params.Id
   if (!Id) {
-    debug.error("ERROR: No ID found in Experience Delete request!")
-    res.status(500).send("ERROR: No ID found in Experience Delete request!")
+    debug.error("ERROR: No ID found in Event Delete request!")
+    res.status(500).send("ERROR: No ID found in Event Delete request!")
   }
-  let reply = await ExperienceLib.deleteExperienceById(Id)
+  let reply = await EventLib.deleteEventById(Id)
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No Experience Found Or Deleting Experience!')
+    res.status(500).send('ERROR: No Event Found Or Deleting Event!')
   }
 })
 
