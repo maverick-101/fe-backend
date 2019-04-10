@@ -3,7 +3,7 @@ let debug = require("debug-levels")("eventApi")
 const Event = require('../models/Event')
 const EventLib = require('../lib/EventLib')
 const AppConfig = require('../lib/AppConfig')
-const GLobalLib = require('../lib/GLobalLib')
+const GlsobalLib = require('../lib/GlobalLib')
 const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
 const cloudinary = require('cloudinary')
@@ -94,7 +94,7 @@ router.get('/fetchById/event-fetchById/:Id', async(req, res) => {
     res.status(500).send("ERROR: No ID found in Event FetchByID request!")
   }
   let reply = await EventLib.findEventById(Id)
-  reply = await GLobalLib.getObject(reply) || {}
+  reply = await GlobalLib.getObject(reply) || {}
   if (reply) {
     res.status(200).send(reply)
   } else {
