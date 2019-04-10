@@ -145,4 +145,27 @@ router.delete('/delete/city-deleteById/:Id', async(req, res) => {
   }
 })
 
+//Delete image by ID and Url 
+router.delete('/deleteGallery/city-deleteGallery', async(req, res) => {
+  if (!req.body.cityGallery) {
+    debug.error("ERROR: No City Gallery found in Gallery Delete request!")
+    res.status(500).send("ERROR: No City Gallery found in Gallery Delete request!")
+  }
+  let data = JSON.parse(req.body.cityGallery)
+  // let data = req.body  // for test on Postman
+  let url = data.url
+  let ID = data.ID
+  let reply = await CityLib.deleteCityGallery(ID, url)
+  if (reply) {
+    let response = await CityLib.updateCity(reply)
+    if (response) {
+      res.status(200).send(response)
+    } else {
+      res.status(500).send('ERROR: Updating City Gallery!')
+    }
+  } else {
+    res.status(500).send('ERROR: No City Found Or Error Deleting City Gallery!')
+  }
+})
+
 module.exports = router
