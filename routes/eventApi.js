@@ -28,13 +28,13 @@ const parser = multer({ storage: storage })
 router.post("/save/event-save", checkAuth, parser.array("gallery_images"), async (req, res) => {
   let cloudinaryData = req.files
   let gallery = []
-  // debug.info(cloudinaryData)
-  // if (!req.body.event) {
-  //   debug.error("ERROR: No Data found in Event POST request!")
-  //   res.status(500).send("ERROR: No Data found in Event POST request!")
-  // }
-  // let data = JSON.parse(req.body.event)
-  let data = req.body  // for test on Postman
+  debug.info(cloudinaryData)
+  if (!req.body.event) {
+    debug.error("ERROR: No Data found in Event POST request!")
+    res.status(500).send("ERROR: No Data found in Event POST request!")
+  }
+  let data = JSON.parse(req.body.event)
+  // let data = req.body  // for test on Postman
   gallery = await CloudinaryLib.createGallery(data, cloudinaryData)
   data.gallery = gallery
   let reply = await EventLib.saveEvent(data)
@@ -50,12 +50,12 @@ router.patch("/update/event-update", checkAuth, parser.array("gallery_images"), 
   let cloudinaryData = req.files
   let gallery = []
   debug.info(cloudinaryData)
-  // if (!req.body.event) {
-  //   debug.error("ERROR: No Data found in Event POST request!")
-  //   res.status(500).send("ERROR: No Data found in Event POST request!")
-  // }
-  // let data = JSON.parse(req.body.event)
-  let data = req.body   //for testing in postman
+  if (!req.body.event) {
+    debug.error("ERROR: No Data found in Event POST request!")
+    res.status(500).send("ERROR: No Data found in Event POST request!")
+  }
+  let data = JSON.parse(req.body.event)
+  // let data = req.body   //for testing in postman
   if (cloudinaryData && cloudinaryData.length > 0) {
     gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
     data.gallery = gallery
