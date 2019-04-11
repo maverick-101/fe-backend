@@ -188,4 +188,27 @@ router.delete('/delete/event-deleteById/:Id', async(req, res) => {
   }
 })
 
+//Delete image by ID and Url 
+router.delete('/deleteGallery/event-deleteGallery', async(req, res) => {
+  if (!req.body.eventGallery) {
+    debug.error("ERROR: No Event Gallery found in Gallery Delete request!")
+    res.status(500).send("ERROR: No Event Gallery found in Gallery Delete request!")
+  }
+  let data = JSON.parse(req.body.eventGallery)
+  // let data = req.body  // for test on Postman
+  let url = data.url
+  let ID = data.ID
+  let reply = await EventLib.deleteEventGallery(ID, url)
+  if (reply) {
+    let response = await EventLib.updateEvent(reply)
+    if (response) {
+      res.status(200).send(response)
+    } else {
+      res.status(500).send('ERROR: Updating Event Gallery!')
+    }
+  } else {
+    res.status(500).send('ERROR: No Event Found Or Error Deleting Event Gallery!')
+  }
+})
+
 module.exports = router
