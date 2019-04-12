@@ -21,6 +21,10 @@ const eventSchema = mongoose.Schema({
       image_type: String
     }
   ],
+  cover_photo: {
+    url: String,
+    public_id: String
+  },
   event_videos: [],
   ticket_price: Number,
   contact_number: String,
