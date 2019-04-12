@@ -25,8 +25,22 @@ const parser = multer({ storage: storage })
 
 
 // Saving Events
-router.post("/save/event-save", checkAuth, parser.array("gallery_images"), async (req, res) => {
-  let cloudinaryData = req.files
+router.post("/save/event-save", checkAuth, 
+parser.fields([{
+  name: 'gallery_images', maxCount: 10
+}, {
+  name: 'cover_photo', maxCount: 1
+}]), async (req, res) => {
+  debug.info(req.files)
+  let cover_photo = {}
+  let cloudinaryData = req.files.gallery_images
+  let cover_Data = req.files.cover_photo
+  if(cover_Data && cover_Data.length) {
+    if(cover_Data[0]) {
+      cover_photo.public_id = cover_Data[0].public_id
+      cover_photo.url = cover_Data[0].url
+    }
+  }
   let gallery = []
   debug.info(cloudinaryData)
   if (!req.body.event) {
@@ -37,6 +51,7 @@ router.post("/save/event-save", checkAuth, parser.array("gallery_images"), async
   // let data = req.body  // for test on Postman
   gallery = await CloudinaryLib.createGallery(data, cloudinaryData)
   data.gallery = gallery
+  data.cover_photo = cover_photo || {}
   let reply = await EventLib.saveEvent(data)
   if (reply) {
     res.status(200).send('Event Saved!')
@@ -46,10 +61,17 @@ router.post("/save/event-save", checkAuth, parser.array("gallery_images"), async
 })
 
 // Updating Events
-router.patch("/update/event-update", checkAuth, parser.array("gallery_images"), async (req, res) => {
-  let cloudinaryData = req.files
+router.patch("/update/event-update", checkAuth, 
+parser.fields([{
+  name: 'gallery_images', maxCount: 10
+}, {
+  name: 'cover_photo', maxCount: 1
+}]), async (req, res) => {
+  debug.info(req.files)
+  let cloudinaryData = req.files.gallery_images
+  let cover_Data = req.files.cover_photo
+  let cover_photo = {}
   let gallery = []
-  debug.info(cloudinaryData)
   if (!req.body.event) {
     debug.error("ERROR: No Data found in Event POST request!")
     res.status(500).send("ERROR: No Data found in Event POST request!")
@@ -58,7 +80,14 @@ router.patch("/update/event-update", checkAuth, parser.array("gallery_images"), 
   // let data = req.body   //for testing in postman
   if (cloudinaryData && cloudinaryData.length > 0) {
     gallery = await CloudinaryLib.updateGallery(data, cloudinaryData)
+    if(cover_Data && cover_Data.length) {
+      if(cover_Data[0]) {
+        cover_photo.public_id = cover_Data[0].public_id
+        cover_photo.url = cover_Data[0].url
+      }
+    }
     data.gallery = gallery
+    data.cover_photo = cover_photo || {}
     delete data.image_Title
     let reply = await EventLib.updateEvent(data)
     if (reply) {
