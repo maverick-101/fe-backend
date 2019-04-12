@@ -34,6 +34,7 @@ const eventSchema = mongoose.Schema({
   why_list: String,
   recommended: Boolean,
   gathering_type: String,
+  organizer: String,
   created_At: Date
 },
 { versionKey: false })
