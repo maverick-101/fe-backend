@@ -227,7 +227,14 @@ router.delete('/deleteGallery/event-deleteGallery', async(req, res) => {
   // let data = req.body  // for test on Postman
   let url = data.url
   let ID = data.ID
-  let reply = await EventLib.deleteEventGallery(ID, url)
+  let type = data.type
+  let reply = {}
+  if(data.type === 'gallery') {
+    reply = await EventLib.deleteEventGallery(ID, url)
+  } else {
+    reply = await EventLib.deleteCoverPhoto(ID, url)
+  }
+  
   if (reply) {
     let response = await EventLib.updateEvent(reply)
     if (response) {
