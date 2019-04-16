@@ -81,7 +81,7 @@ const hotelSchema = mongoose.Schema({
     latitude: String,
     longitude: String,
     hotel_amenities: [],
-    video_link: String
+    video_link: []
   },
 { versionKey: false })
 
