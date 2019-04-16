@@ -170,45 +170,13 @@ router.post("/user/signIn", async (req, res) => {
   })
 })
 
-// fetching all Users
+// fetching all indexes
 router.get('/user/getIndex', async(req, res) => {
   let reply = await UserLib.getIndexx()
   if (reply) {
     res.status(200).send(reply)
   } else {
-    res.status(500).send('ERROR: No User Found Or Error Fetching Users!')
-  }
-})
-
-// fetching all Users
-router.post('/user/dropIndexOne', async(req, res) => {
-  let data = req.body.data
-  let reply = await UserLib.dropIndexOne(data)
-  if (reply) {
-    res.status(200).send(reply)
-  } else {
-    res.status(500).send('ERROR: No User Found Or Error Fetching Users!')
-  }
-})
-
-// fetching all Users
-router.post('/user/dropIndexMinusOne', async(req, res) => {
-  let data = req.body.data
-  let reply = await UserLib.dropIndexMinus(data)
-  if (reply) {
-    res.status(200).send(reply)
-  } else {
-    res.status(500).send('ERROR: No User Found Or Error Fetching Users!')
-  }
-})
-
-// fetching all Users
-router.post('/user/dropIndex', async(req, res) => {
-  let reply = await UserLib.dropIndexx()
-  if (reply) {
-    res.status(200).send(reply)
-  } else {
-    res.status(500).send('ERROR: No User Found Or Error Fetching Users!')
+    res.status(500).send('ERROR: No User Index Found Or Error Fetching Indexes in Users!')
   }
 })
 
