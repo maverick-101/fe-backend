@@ -47,7 +47,8 @@ const experienceSchema = mongoose.Schema({
       image_Title: String
     }
   ],
-  description: String
+  description: String,
+  video_link: String
 },
 { versionKey: false })
 

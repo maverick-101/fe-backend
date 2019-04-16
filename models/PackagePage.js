@@ -55,6 +55,7 @@ const packagePageSchema = mongoose.Schema({
   star_rating: Number,
   views: Number,
   review_count: Number,
+  video_link: String,
   summary: String
 },
 { versionKey: false })
