@@ -38,18 +38,25 @@ router.post("/user/save", parser.single("profile_picture"), async (req, res) => 
   }
   profile_picture = await CloudinaryLib.createImage(cloudinaryData)
   data.profile_picture = profile_picture || {}
-  data = await UserLib.bcryptPassword(data)
-  debug.error("found in User request!", data)
-  if(data) {
-    let reply = await UserLib.saveUser(data)
-    if (reply) {
-      res.status(200).send('User Saved!')
+  let checker = await UserLib.findUserByEmail(data.email)
+  if(!checker) {
+    data = await UserLib.bcryptPassword(data)
+    debug.error("found in User request!", data)
+    if(data) {
+      let reply = await UserLib.saveUser(data)
+      if (reply) {
+        res.status(200).send('User Saved!')
+      } else {
+        res.status(500).send('ERROR: Duplicate Field Found or Error Saving User!')
+      }
     } else {
-      res.status(500).send('ERROR: Duplicate Field Found or Error Saving User!')
+      res.status(500).send('ERROR: Adding Hash For Passowrd!')
     }
   } else {
-    res.status(500).send('ERROR: Adding Hash For Passowrd!')
+    debug.info('ERROR: Duplicate Email Found!')
+    res.status(500).send('ERROR: Duplicate Email Found')
   }
+  
 })
 
 //deleting User Image
@@ -101,12 +108,24 @@ router.patch("/user/update", checkAuth, parser.single("profile_picture"), async 
   debug.info(profile_picture)
   data.profile_picture = profile_picture
   debug.info(data.profile_picture)
-  let reply = await UserLib.updateUser(data)
-  if (reply) {
-    res.status(200).send('User Updated!')
+  let checker = await UserLib.findOneUser(data.ID)
+  if(checker) {
+    if(checker.email === data.email.toLowerCase()) {
+      let reply = await UserLib.updateUser(data)
+      if (reply) {
+        res.status(200).send('User Updated!')
+      } else {
+        res.status(500).send('ERROR: No ID Found or Error Updating User!')
+      }
+    } else {
+      debug.info('ERROR: Email did not match!')
+      res.status(500).send('ERROR: No ID Found or Error Updating User!')
+    }
   } else {
-    res.status(500).send('ERROR: No ID Found or Error Updating User!')
+    debug.info('ERROR: No ID Found!')
+    res.status(500).send('ERROR: No ID Found!')
   }
+  
 })
 
 // User signIn
@@ -149,6 +168,48 @@ router.post("/user/signIn", async (req, res) => {
         })
       }
   })
+})
+
+// fetching all Users
+router.get('/user/getIndex', async(req, res) => {
+  let reply = await UserLib.getIndexx()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No User Found Or Error Fetching Users!')
+  }
+})
+
+// fetching all Users
+router.post('/user/dropIndexOne', async(req, res) => {
+  let data = req.body.data
+  let reply = await UserLib.dropIndexOne()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No User Found Or Error Fetching Users!')
+  }
+})
+
+// fetching all Users
+router.post('/user/dropIndexMinusOne', async(req, res) => {
+  let data = req.body.data
+  let reply = await UserLib.dropIndexMinus(data)
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No User Found Or Error Fetching Users!')
+  }
+})
+
+// fetching all Users
+router.post('/user/dropIndex', async(req, res) => {
+  let reply = await UserLib.dropIndexx()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No User Found Or Error Fetching Users!')
+  }
 })
 
 // fetching all Users
