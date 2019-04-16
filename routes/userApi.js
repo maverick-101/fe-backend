@@ -183,7 +183,7 @@ router.get('/user/getIndex', async(req, res) => {
 // fetching all Users
 router.post('/user/dropIndexOne', async(req, res) => {
   let data = req.body.data
-  let reply = await UserLib.dropIndexOne()
+  let reply = await UserLib.dropIndexOne(data)
   if (reply) {
     res.status(200).send(reply)
   } else {
