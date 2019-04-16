@@ -1,5 +1,3 @@
-let DbConn = require("../lib/Config")
-const debug = require('debug-levels')('City')
 const mongoose = require('mongoose')
 const autoIncrement = require('mongoose-auto-increment')
 

@@ -1,5 +1,3 @@
-let DbConn = require("../lib/Config")
-const debug = require('debug-levels')('City')
 const mongoose = require('mongoose')
 const autoIncrement = require('mongoose-auto-increment')
 
@@ -16,13 +14,15 @@ const citySchema = mongoose.Schema({
     unique:true
 	},
   views: Number,
+  created_At: Date,
   gallery: [
     {
       public_id: String,
       url: String,
       image_type: String
     }
-  ]
+  ],
+  description: String
 },
 { versionKey: false })
 

@@ -1,5 +1,3 @@
-let DbConn = require("../lib/Config")
-const debug = require('debug-levels')('Locations')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const autoIncrement = require('mongoose-auto-increment')
@@ -8,20 +6,21 @@ let locationResourcesSchema = new Schema({
 	ID: {
 		type: Number,
 		unique:true
-	},
+  },
+  LocationResources_title: String,
   location_id: Number,
-  type: String,
+  resource_type: String,
   city_id: Number,
-  URL: String,
   status: String,
-  gallery: [
+  gallery:
     {
       public_id: String,
       url: String,
       image_type: String
-    }
-  ]
-},
+    },
+  description: String,
+  created_At: Date
+  },
 { 
 	versionKey: false 
 })

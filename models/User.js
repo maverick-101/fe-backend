@@ -12,12 +12,11 @@ let userSchema = new Schema({
 	deactivated: Boolean,
 	client_type: String,
 	phone: {
-		type: String,
-		unique: true
+		type: String
 	},
 	email: {
 		type: String,
-		unique: true
+		lowercase: true
 	},
 	profile_picture: {
 		public_id: String,
@@ -25,8 +24,8 @@ let userSchema = new Schema({
 	},
 	address: String,
 	password: String,
-  type: String,
-  city_id: Number
+	city_id: Number,
+	user_type: String
 },
 { 
 	versionKey: false 
