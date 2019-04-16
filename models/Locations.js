@@ -23,7 +23,8 @@ let locationSchema  = new Schema({
 	},
   views: Number,
   star_rating: Number,
-  recommended: Boolean
+  recommended: Boolean,
+  video_link: String
 },
 { versionKey: false })
 

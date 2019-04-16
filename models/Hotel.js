@@ -80,7 +80,8 @@ const hotelSchema = mongoose.Schema({
     review_count: Number,
     latitude: String,
     longitude: String,
-    hotel_amenities: []
+    hotel_amenities: [],
+    video_link: String
   },
 { versionKey: false })
 
