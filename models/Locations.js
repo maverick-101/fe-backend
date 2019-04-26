@@ -24,7 +24,8 @@ let locationSchema  = new Schema({
   views: Number,
   star_rating: Number,
   recommended: Boolean,
-  video_link: []
+  video_link: [],
+  description: String,
 },
 { versionKey: false })
 
