@@ -19,6 +19,7 @@ const roomSchema = mongoose.Schema({
       image_type: String
     }
   ],
+  price_per_night: Number,
   pets_allowed: Boolean,
   smoking_allowed: Boolean,
   room_amenities: [
