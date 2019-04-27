@@ -155,7 +155,7 @@ router.post("/user/signIn", async (req, res) => {
     {user: user}, 
     AppConfig.JWT_KEY,
     {
-      expiresIn: "400h"
+      expiresIn: "14 days"
     },
     (err, token)=> {
       if(err) {
