@@ -7,7 +7,7 @@ const hotelSchema = mongoose.Schema({
       unique: true
     },
     name: String,
-    location_Id: Number,
+    location_id: Number,
     hotel_location: {
       location_Id: {
         type: Number,
