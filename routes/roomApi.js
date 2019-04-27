@@ -135,4 +135,27 @@ router.delete('/delete/room-deleteById/:Id', async(req, res) => {
   }
 })
 
+//Delete image by ID and Url 
+router.delete('/deleteGallery/room-deleteGallery', async(req, res) => {
+  if (!req.body.roomGallery) {
+    debug.error("ERROR: No Room Gallery found in Gallery Delete request!")
+    res.status(500).send("ERROR: No Room Gallery found in Gallery Delete request!")
+  }
+  let data = JSON.parse(req.body.roomGallery)
+  // let data = req.body  // for test on Postman
+  let url = data.url
+  let ID = data.ID
+  let reply = await RoomLib.deleteRoomGallery(ID, url)
+  if (reply) {
+    let response = await RoomLib.updateRoom(reply)
+    if (response) {
+      res.status(200).send(response)
+    } else {
+      res.status(500).send('ERROR: Updating Room Gallery!')
+    }
+  } else {
+    res.status(500).send('ERROR: No Room Found Or Error Deleting Room Gallery!')
+  }
+})
+
 module.exports = router
