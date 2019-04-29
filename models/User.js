@@ -25,7 +25,10 @@ let userSchema = new Schema({
 	address: String,
 	password: String,
 	city_id: Number,
-	user_type: String
+	user_type: {
+		type: String,
+		default: "user"
+	}
 },
 { 
 	versionKey: false 

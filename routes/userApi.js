@@ -132,7 +132,7 @@ router.patch("/user/update", checkAuth, parser.single("profile_picture"), async 
 router.post("/user/signIn", async (req, res) => {
   if (!req.body.user) {
     debug.error("ERROR: No Data found in User Sign In request!")
-    res.status(500).send("ERROR: No Data found in User Sign In request!")
+    res.status(400).send("ERROR: No Data found in User Sign In request!")
   }
   let data = JSON.parse(req.body.user)
   // let data = req.body   //for testing in postman
@@ -140,6 +140,102 @@ router.post("/user/signIn", async (req, res) => {
   let password = data.password
   let response = await UserLib.findUserByEmail(email)
   if(response) {
+    if(response.user_type !== 'user') {
+      debug.error("ERROR: user_type does not match!")
+      res.status(400).send('ERROR: user_type does not match!')
+    }
+    let reply = await UserLib.bcryptComparePassword(response.password, password)
+    if(!reply) {
+      debug.info("Auth Failed!")
+      res.status(401).send('ERROR: Auth Failed!')
+    }
+  } else {
+    debug.info("ERROR: No User Found!")
+    res.status(500).send('ERROR: No User Found!')
+  }
+
+  const user = response
+  jwt.sign(
+    {user: user}, 
+    AppConfig.JWT_KEY,
+    {
+      expiresIn: "14 days"
+    },
+    (err, token)=> {
+      if(err) {
+        debug.info("ERROR: Signing JWT Token!", err)
+        res.status(500).send('ERROR: Signing JWT Token!')
+      } else {
+        res.status(200).json({
+          message: 'Auth Success!',
+          Token: token
+        })
+      }
+  })
+})
+
+// agent signIn
+router.post("/agent/signIn", async (req, res) => {
+  if (!req.body.user) {
+    debug.error("ERROR: No Data found in Agent Sign In request!")
+    res.status(400).send("ERROR: No Data found in Agent Sign In request!")
+  }
+  let data = JSON.parse(req.body.user)
+  // let data = req.body   //for testing in postman
+  let email = data.email
+  let password = data.password
+  let response = await UserLib.findUserByEmail(email)
+  if(response) {
+    if(response.user_type !== 'agent') {
+      debug.error("ERROR: user_type does not match!")
+      res.status(400).send('ERROR: user_type does not match!')
+    }
+    let reply = await UserLib.bcryptComparePassword(response.password, password)
+    if(!reply) {
+      debug.info("Auth Failed!")
+      res.status(401).send('ERROR: Auth Failed!')
+    }
+  } else {
+    debug.info("ERROR: No User Found!")
+    res.status(500).send('ERROR: No User Found!')
+  }
+
+  const user = response
+  jwt.sign(
+    {user: user}, 
+    AppConfig.JWT_KEY,
+    {
+      expiresIn: "14 days"
+    },
+    (err, token)=> {
+      if(err) {
+        debug.info("ERROR: Signing JWT Token!", err)
+        res.status(500).send('ERROR: Signing JWT Token!')
+      } else {
+        res.status(200).json({
+          message: 'Auth Success!',
+          Token: token
+        })
+      }
+  })
+})
+
+// Admin signIn
+router.post("/admin/signIn", async (req, res) => {
+  if (!req.body.user) {
+    debug.error("ERROR: No Data found in User Sign In request!")
+    res.status(400).send("ERROR: No Data found in User Sign In request!")
+  }
+  let data = JSON.parse(req.body.user)
+  // let data = req.body   //for testing in postman
+  let email = data.email
+  let password = data.password
+  let response = await UserLib.findUserByEmail(email)
+  if(response) {
+    if(response.user_type !== 'admin') {
+      debug.error("ERROR: user_type does not match!")
+      res.status(400).send('ERROR: user_type does not match!')
+    }
     let reply = await UserLib.bcryptComparePassword(response.password, password)
     if(!reply) {
       debug.info("Auth Failed!")
@@ -192,6 +288,16 @@ router.get('/user/me', checkAuth, async(req, res) => {
 // fetching all Users
 router.get('/user/fetch', async(req, res) => {
   let reply = await UserLib.fetchAllUsers()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No User Found Or Error Fetching Users!')
+  }
+})
+
+// fetching all agent
+router.get('/agent/fetch', async(req, res) => {
+  let reply = await UserLib.fetchAllAgents()
   if (reply) {
     res.status(200).send(reply)
   } else {
