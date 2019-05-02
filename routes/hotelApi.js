@@ -98,6 +98,36 @@ router.get('/hotel/fetch', async(req, res) => {
   }
 })
 
+// fetching all indexes
+router.get('/hotel/getIndex', async(req, res) => {
+  let reply = await HotelLib.getIndex()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Hotel Index Found Or Error Fetching Indexes in Hotel!')
+  }
+})
+
+// fetching all indexes
+router.get('/hotel/dropEmail', async(req, res) => {
+  let reply = await HotelLib.dropEmailIndex()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Hotel Index Found Or Error Fetching Indexes in Hotel!')
+  }
+})
+
+// fetching all indexes
+router.get('/hotel/dropPhone', async(req, res) => {
+  let reply = await HotelLib.dropPhoneIndex()
+  if (reply) {
+    res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Hotel Index Found Or Error Fetching Indexes in Hotel!')
+  }
+})
+
 //fetching 8 Random hotels
 router.get('/hotel/fetch-EightHotels', async(req, res) => {
   let reply = await HotelLib.findEightRandomHotels()
