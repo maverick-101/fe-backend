@@ -7,7 +7,7 @@ const checkAuth = require('../middleware/check-auth')
 
 
 // Saving hotelContact
-router.post("/save/hotelContact-save", checkAuth, async (req, res) => {
+router.post("/save/hotelContact-save", async (req, res) => {
   let data = JSON.parse(req.body.hotelContact)
   let response
   // let data = req.body  // for test on Postman
@@ -31,7 +31,7 @@ router.post("/save/hotelContact-save", checkAuth, async (req, res) => {
 })
 
 // Updating hotelContact
-router.patch("/update/hotelContact-update", checkAuth, async (req, res) => {
+router.patch("/update/hotelContact-update", async (req, res) => {
   let data = JSON.parse(req.body.hotelContact)
   // let data = req.body   //for testing in postman
 	if (!data) {
