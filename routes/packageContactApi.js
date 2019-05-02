@@ -6,7 +6,7 @@ const checkAuth = require('../middleware/check-auth')
 
 
 // Saving packageContact
-router.post("/save/packageContact-save", checkAuth, async (req, res) => {
+router.post("/save/packageContact-save", async (req, res) => {
   let data = JSON.parse(req.body.packageContact)
   // let data = req.body  // for test on Postman
 	if (!data) {
@@ -22,7 +22,7 @@ router.post("/save/packageContact-save", checkAuth, async (req, res) => {
 })
 
 // Updating packageContact
-router.patch("/update/packageContact-update", checkAuth, async (req, res) => {
+router.patch("/update/packageContact-update", async (req, res) => {
   let data = JSON.parse(req.body.packageContact)
   // let data = req.body   //for testing in postman
 	if (!data) {
