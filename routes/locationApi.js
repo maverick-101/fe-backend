@@ -76,9 +76,15 @@ router.patch("/update/location-update", checkAuth, parser.array("gallery_images"
 
 //fetching all locations
 router.get('/fetch/locations-fetch', async(req, res) => {
+  let reply = []
+  let all = req.query.all || false
   let pageSize = req.query.pageSize || 10
   let pageNumber = req.query.pageNumber || 1
-  let reply = await LocationLib.fetchAllLocations (pageSize, pageNumber)
+  if(all) {
+    reply = await LocationLib.fetchAllLocations ()
+  } else {
+    reply = await LocationLib.fetchPaginationLocations (pageSize, pageNumber)
+  }
   if (reply) {
     res.status(200).send(reply)
   } else {
