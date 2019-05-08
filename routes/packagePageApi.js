@@ -76,9 +76,15 @@ router.patch("/update/packagePage-update", checkAuth, parser.array("gallery_imag
 
 //fetching all packagePages
 router.get('/fetch/packagePage-fetch', async(req, res) => {
+  let reply = []
+  let all = req.query.all || false
   let pageSize = req.query.pageSize || 10
   let pageNumber = req.query.pageNumber || 1
-  let reply = await PackagePageLib.fetchAllPackagePages(pageSize, pageNumber)
+  if(all) {
+    reply = await PackagePageLib.fetchAllPackagePages()
+  } else {
+    reply = await PackagePageLib.fetchPaginationPackagePages(pageSize, pageNumber)
+  }
   if (reply) {
     res.status(200).send(reply)
   } else {
