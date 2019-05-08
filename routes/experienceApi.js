@@ -91,9 +91,15 @@ router.patch("/update/experience-update", parser.fields([{
 
 // fetching all Experiences
 router.get('/fetch/experience-fetch', async(req, res) => {
+  let reply = []
+  let all = req.query.all || false
   let pageSize = req.query.pageSize || 10
   let pageNumber = req.query.pageNumber || 1
-  let reply = await ExperienceLib.fetchAllExperiences(pageSize, pageNumber)
+  if(all) {
+    reply = await ExperienceLib.fetchAllExperiences()
+  } else {
+    reply = await ExperienceLib.fetchPaginationExperiences(pageSize, pageNumber)
+  }
   if (reply) {
     res.status(200).send(reply)
   } else {

@@ -88,9 +88,15 @@ router.patch("/hotel/update", checkAuth, parser.array("gallery_images"), async (
 
 //fetching all hotels
 router.get('/hotel/fetch', async(req, res) => {
+  let reply = []
+  let all = req.query.all || false
   let pageSize = req.query.pageSize || 10
   let pageNumber = req.query.pageNumber || 1
-  let reply = await HotelLib.fetchAllHotels(pageSize, pageNumber)
+  if(all) {
+    reply = await HotelLib.fetchAllHotels()
+  } else {
+    reply = await HotelLib.fetchPaginationHotels(pageSize, pageNumber)
+  } 
   if (reply) {
     res.status(200).send(reply)
   } else {
