@@ -77,11 +77,24 @@ router.patch("/update/city-update", checkAuth, parser.array("gallery_images"), a
 
 // fetching all cities
 router.get('/fetch/city-fetch', async(req, res) => {
-  let reply = await CityLib.fetchAllCities()
-  if (reply) {
-    res.status(200).send(reply)
+  let reply = []
+  let all = req.query.all || false
+  let pageSize = req.query.pageSize || 10
+  let pageNumber = req.query.pageNumber || 1
+  if(all) {
+    reply = await CityLib.fetchAllCities ()
   } else {
-    res.status(500).send('ERROR: No City Found Or Error Fetching Cities!')
+    reply = await CityLib.fetchPaginationCitiess (pageSize, pageNumber)
+  }
+  if (reply) {
+    let count = await CityLib.countCities()
+    let response = {
+      total: count || 0,
+      items: reply
+    }
+    res.status(200).send(response)
+  } else {
+    res.status(500).send('ERROR: No location Found Or Error Fetching locations!')
   }
 })
 
