@@ -98,7 +98,12 @@ router.get('/hotel/fetch', async(req, res) => {
     reply = await HotelLib.fetchPaginationHotels(pageSize, pageNumber)
   } 
   if (reply) {
-    res.status(200).send(reply)
+    let count = await HotelLib.countHotels()
+    let response = {
+      total: count || 0,
+      items: reply
+    }
+    res.status(200).send(response)
   } else {
     res.status(500).send('ERROR: No Hotel Found Or Error Fetching Hotels!')
   }
