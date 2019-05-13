@@ -101,7 +101,12 @@ router.get('/fetch/experience-fetch', async(req, res) => {
     reply = await ExperienceLib.fetchPaginationExperiences(pageSize, pageNumber)
   }
   if (reply) {
-    res.status(200).send(reply)
+    let count = await ExperienceLib.countExperiences()
+    let response = {
+      total: count || 0,
+      items: reply
+    }
+    res.status(200).send(response)
   } else {
     res.status(500).send('ERROR: No Experience Found Or Error Fetching Experiences!')
   }

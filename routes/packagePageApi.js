@@ -86,7 +86,12 @@ router.get('/fetch/packagePage-fetch', async(req, res) => {
     reply = await PackagePageLib.fetchPaginationPackagePages(pageSize, pageNumber)
   }
   if (reply) {
-    res.status(200).send(reply)
+    let count = await PackagePageLib.countPackages()
+    let response = {
+      total: count || 0,
+      items: reply
+    }
+    res.status(200).send(response)
   } else {
     res.status(500).send('ERROR: No packagePage Found Or Error Fetching packagePages!')
   }
