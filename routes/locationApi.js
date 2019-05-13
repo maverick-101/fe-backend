@@ -86,7 +86,12 @@ router.get('/fetch/locations-fetch', async(req, res) => {
     reply = await LocationLib.fetchPaginationLocations (pageSize, pageNumber)
   }
   if (reply) {
-    res.status(200).send(reply)
+    let count = await LocationLib.countLocations()
+    let response = {
+      total: count || 0,
+      items: reply
+    }
+    res.status(200).send(response)
   } else {
     res.status(500).send('ERROR: No location Found Or Error Fetching locations!')
   }
