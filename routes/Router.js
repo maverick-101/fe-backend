@@ -19,16 +19,19 @@ credentials: true,
 
 app.use(cors(corsOptions));
 
-// app.use('/api/', function(req, res, next) {
-//   const today = new Date()
-//   const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
-//   const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
-//   const dateTime = date+' '+time
-//   debug.info('<<<<<<<<< REQUEST INFO: >>>>>>>>>>')
-//   debug.info(dateTime)
-//   debug.info(req.protocol + '://' + req.get('host') + req.originalUrl)
-//   next();
-// })
+app.use('/', function(req, res, next) {
+  const today = new Date()
+  const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
+  const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
+  const dateTime = date+' '+time
+  debug.info('<<<<<<<<< REQUEST INFO: >>>>>>>>>>')
+  debug.info(dateTime)
+  debug.info(req.protocol + '://' + req.get('host') + req.originalUrl)
+  console.log('<<<<<<<<< REQUEST INFO: >>>>>>>>>>')
+  console.log(dateTime)
+  console.log(req.protocol + '://' + req.get('host') + req.originalUrl)
+  next();
+})
 
 app.use(express.json({limit:'50mb'}))
 
