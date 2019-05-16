@@ -158,6 +158,10 @@ router.get('/fetchByCity/location-fetchByCity/:city_id', async(req, res) => {
     res.status(500).send("ERROR: No city_id found in location request!")
   }
   let city = await CityLib.findCityById(city_id)
+  if(!city) {
+    debug.error("ERROR: No city Found OR ERROR Fetching City!")
+    res.status(500).send("ERROR: No city Found OR ERROR Fetching City!")
+  }
   let reply = await LocationLib.findTenRandomCityLocations(city_id)
   if (reply) {
     if(reply.length < limit) {
