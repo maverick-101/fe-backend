@@ -19,7 +19,7 @@ credentials: true,
 
 app.use(cors(corsOptions));
 
-app.use('/', function(req, res, next) {
+app.use('/api/', function(req, res, next) {
   const today = new Date()
   const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
   const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
