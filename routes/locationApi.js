@@ -2,12 +2,14 @@ const router = require('express').Router()
 let debug = require("debug-levels")("locationApi")
 const Locations = require('../models/Locations')
 const LocationLib = require('../lib/LocationLib')
+const CityLib = require('../lib/CityLib')
 const AppConfig = require('../lib/AppConfig')
 const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
 const checkAuth = require('../middleware/check-auth')
+const _ = require('underscore')
 
 cloudinary.config({ 
   cloud_name: AppConfig.cloudinaryName, 
@@ -149,14 +151,41 @@ router.get('/fetchByName/location-fetchByName/:name', async(req, res) => {
 
 //fetching location by City_id
 router.get('/fetchByCity/location-fetchByCity/:city_id', async(req, res) => {
+  const limit = 10
   let city_id = req.params.city_id
   if (!city_id ) {
-    debug.error("ERROR: No name found in location request!")
-    res.status(500).send("ERROR: No name found in location request!")
+    debug.error("ERROR: No city_id found in location request!")
+    res.status(500).send("ERROR: No city_id found in location request!")
   }
-  let reply = await LocationLib.findLocationByCity_id(city_id)
+  let city = await CityLib.findCityById(city_id)
+  let reply = await LocationLib.findTenRandomCityLocations(city_id)
   if (reply) {
-    res.status(200).send(reply)
+    if(reply.length < limit) {
+      let replyLength = limit - reply.length
+      let provinceLocation = await LocationLib.findLocationsByProvince(city)
+      if(provinceLocation) {
+        provinceLocation = _.sample(provinceLocation, replyLength)
+        reply = reply.concat(provinceLocation)
+        if(reply.length < limit) {
+          replyLength = limit - reply.length
+          let locations = await LocationLib.findRandomLocations(city)
+          if(locations) {
+            locations = _.sample(locations, replyLength)
+            reply = reply.concat(locations)
+            debug.info('3. Reply Length .........:   ', reply.length)
+            res.status(200).send(reply)
+          } else {
+            res.status(500).send('ERROR: No location Found Or Error Fetching Locations!')
+          }
+        } else {
+          debug.info('2. Reply Length .........:   ', reply.length)
+          res.status(200).send(reply)
+        }
+      }
+    } else {
+      debug.info('1. Reply Length .........:   ', reply.length)
+      res.status(200).send(reply)
+    }
   } else {
     res.status(500).send('ERROR: No location Found Or Error Fetching location By City_id!')
   }
