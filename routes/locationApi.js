@@ -153,6 +153,7 @@ router.get('/fetchByName/location-fetchByName/:name', async(req, res) => {
 router.get('/fetchByCity/location-fetchByCity/:city_id', async(req, res) => {
   const limit = 10
   let city_id = req.params.city_id
+  city_id = Number(city_id)
   if (!city_id ) {
     debug.error("ERROR: No city_id found in location request!")
     res.status(500).send("ERROR: No city_id found in location request!")
