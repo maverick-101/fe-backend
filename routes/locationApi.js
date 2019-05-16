@@ -155,7 +155,7 @@ router.get('/fetchByCity/location-fetchByCity/:city_id', async(req, res) => {
   let city_id = req.params.city_id
   city_id = Number(city_id)
   if (!city_id ) {
-    debug.error("ERROR: No city_id found in location request!")
+    console.log("ERROR: No city_id found in location request!")
     res.status(500).send("ERROR: No city_id found in location request!")
   }
   let city = await CityLib.findCityById(city_id)
@@ -174,25 +174,25 @@ router.get('/fetchByCity/location-fetchByCity/:city_id', async(req, res) => {
             if(locations) {
               locations = _.sample(locations, replyLength)
               reply = reply.concat(locations)
-              debug.info('3. Reply Length .........:   ', reply.length)
+              console.log('3. Reply Length .........:   ', reply.length)
               res.status(200).send(reply)
             } else {
               res.status(500).send('ERROR: No location Found Or Error Fetching Locations!')
             }
           } else {
-            debug.info('2. Reply Length .........:   ', reply.length)
+            console.log('2. Reply Length .........:   ', reply.length)
             res.status(200).send(reply)
           }
         }
       } else {
-        debug.info('1. Reply Length .........:   ', reply.length)
+        console.log('1. Reply Length .........:   ', reply.length)
         res.status(200).send(reply)
       }
     } else {
       res.status(500).send('ERROR: No location Found Or Error Fetching location By City_id!')
     }
   } else {
-    debug.error("ERROR: No city Found OR ERROR Fetching City!")
+    console.log("ERROR: No city Found OR ERROR Fetching City!")
     res.status(500).send("ERROR: No city Found OR ERROR Fetching City!")
   }
 })
