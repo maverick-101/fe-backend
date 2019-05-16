@@ -158,40 +158,41 @@ router.get('/fetchByCity/location-fetchByCity/:city_id', async(req, res) => {
     res.status(500).send("ERROR: No city_id found in location request!")
   }
   let city = await CityLib.findCityById(city_id)
-  if(!city) {
-    debug.error("ERROR: No city Found OR ERROR Fetching City!")
-    res.status(500).send("ERROR: No city Found OR ERROR Fetching City!")
-  }
-  let reply = await LocationLib.findTenRandomCityLocations(city_id)
-  if (reply) {
-    if(reply.length < limit) {
-      let replyLength = limit - reply.length
-      let provinceLocation = await LocationLib.findLocationsByProvince(city)
-      if(provinceLocation) {
-        provinceLocation = _.sample(provinceLocation, replyLength)
-        reply = reply.concat(provinceLocation)
-        if(reply.length < limit) {
-          replyLength = limit - reply.length
-          let locations = await LocationLib.findRandomLocations(city)
-          if(locations) {
-            locations = _.sample(locations, replyLength)
-            reply = reply.concat(locations)
-            debug.info('3. Reply Length .........:   ', reply.length)
-            res.status(200).send(reply)
+  if(city) {
+    let reply = await LocationLib.findTenRandomCityLocations(city_id)
+    if (reply) {
+      if(reply.length < limit) {
+        let replyLength = limit - reply.length
+        let provinceLocation = await LocationLib.findLocationsByProvince(city)
+        if(provinceLocation) {
+          provinceLocation = _.sample(provinceLocation, replyLength)
+          reply = reply.concat(provinceLocation)
+          if(reply.length < limit) {
+            replyLength = limit - reply.length
+            let locations = await LocationLib.findRandomLocations(city)
+            if(locations) {
+              locations = _.sample(locations, replyLength)
+              reply = reply.concat(locations)
+              debug.info('3. Reply Length .........:   ', reply.length)
+              res.status(200).send(reply)
+            } else {
+              res.status(500).send('ERROR: No location Found Or Error Fetching Locations!')
+            }
           } else {
-            res.status(500).send('ERROR: No location Found Or Error Fetching Locations!')
+            debug.info('2. Reply Length .........:   ', reply.length)
+            res.status(200).send(reply)
           }
-        } else {
-          debug.info('2. Reply Length .........:   ', reply.length)
-          res.status(200).send(reply)
         }
+      } else {
+        debug.info('1. Reply Length .........:   ', reply.length)
+        res.status(200).send(reply)
       }
     } else {
-      debug.info('1. Reply Length .........:   ', reply.length)
-      res.status(200).send(reply)
+      res.status(500).send('ERROR: No location Found Or Error Fetching location By City_id!')
     }
   } else {
-    res.status(500).send('ERROR: No location Found Or Error Fetching location By City_id!')
+    debug.error("ERROR: No city Found OR ERROR Fetching City!")
+    res.status(500).send("ERROR: No city Found OR ERROR Fetching City!")
   }
 })
 
