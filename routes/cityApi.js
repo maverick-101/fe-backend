@@ -84,7 +84,7 @@ router.get('/fetch/city-fetch', async(req, res) => {
   if(all) {
     reply = await CityLib.fetchAllCities ()
   } else {
-    reply = await CityLib.fetchPaginationCitiess (pageSize, pageNumber)
+    reply = await CityLib.fetchPaginationCitiess(pageSize, pageNumber)
   }
   if (reply) {
     let count = await CityLib.countCities()
