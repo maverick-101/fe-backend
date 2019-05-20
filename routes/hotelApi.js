@@ -2,6 +2,7 @@ const router = require('express').Router()
 let debug = require("debug-levels")("hotelApi")
 const Hotel = require('../models/Hotel')
 const AppConfig = require('../lib/AppConfig')
+const CityLib = require('../lib/CityLib')
 const CloudinaryLib = require('../lib/Cloudinary')
 const HotelLib = require('../lib/HotelLib')
 const multer  = require('multer')
@@ -204,6 +205,53 @@ router.get('/hotel/fetchByLocation/:location_Id', async(req, res) => {
   let reply = await HotelLib.findHotelByLocation(location_Id)
   if (reply) {
     res.status(200).send(reply)
+  } else {
+    res.status(500).send('ERROR: No Hotel Found Or Error Fetching Hotel By location_Id!')
+  }
+})
+
+//fetching hotels by city_id
+router.get('/hotel/fetchByCity/:city_id', async(req, res) => {
+  const limit = 10
+  let city_id = req.params.city_id
+  if (!city_id ) {
+    debug.error("ERROR: No city_id found in Hotel request!")
+    res.status(500).send("ERROR: No city_id found in Hotel request!")
+  }
+  city_id = Number(city_id)
+  let city = await CityLib.findCityById(city_id)
+  if(city) {
+    let reply = await HotelLib.findTenRandomHotels(city_id)
+    if (reply) {
+      if(reply.length < limit) {
+        let replyLength = limit - reply.length
+        let provinceLocation = await HotelLib.findHotelsByProvince(city)
+        if(provinceLocation) {
+          provinceLocation = _.sample(provinceLocation, replyLength)
+          reply = reply.concat(provinceLocation)
+          if(reply.length < limit) {
+            replyLength = limit - reply.length
+            let hotels = await HotelLib.findRandomHotels(city)
+            if(hotels) {
+              hotels = _.sample(hotels, replyLength)
+              reply = reply.concat(hotels)
+              console.log('3. Reply Length .........:   ', reply.length)
+              res.status(200).send(reply)
+            } else {
+              res.status(500).send('ERROR: No Hotel Found Or Error Fetching Hotels!')
+            }
+          } else {
+            console.log('2. Reply Length .........:   ', reply.length)
+            res.status(200).send(reply)
+          }
+        }
+      } else {
+        console.log('1. Reply Length .........:   ', reply.length)
+        res.status(200).send(reply)
+      }
+    } else {
+      res.status(500).send('ERROR: No Hotel Found Or Error Fetching Hotel By City_id!')
+    }
   } else {
     res.status(500).send('ERROR: No Hotel Found Or Error Fetching Hotel By location_Id!')
   }
