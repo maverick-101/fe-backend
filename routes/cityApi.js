@@ -122,7 +122,12 @@ router.get('/fetchByName/city-fetchByName/:name', async(req, res) => {
   }
   let reply = await CityLib.findCityByName(name)
   if (reply) {
-    res.status(200).send(reply)
+    let total = reply.length
+    let cityRes = {
+      total: total,
+      items: reply
+    }
+    res.status(200).send(cityRes)
   } else {
     res.status(500).send('ERROR: No City Found Or Error Fetching City By Name!')
   }
