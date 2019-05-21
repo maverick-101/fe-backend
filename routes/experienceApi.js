@@ -5,9 +5,12 @@ const ExperienceLib = require('../lib/ExperienceLib')
 const AppConfig = require('../lib/AppConfig')
 const CloudinaryLib = require('../lib/Cloudinary')
 const multer  = require('multer')
+const CityLib = require('../lib/CityLib')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
 const checkAuth = require('../middleware/check-auth')
+const _ = require('underscore')
+
 
 cloudinary.config({ 
   cloud_name: AppConfig.cloudinaryName, 
@@ -154,6 +157,57 @@ router.get('/fetchByLocation/experience-fetchByLocation/:location_id', async(req
     res.status(200).send(reply)
   } else {
     res.status(500).send('ERROR: No Experience Found Or Error Fetching Experience By location_id!')
+  }
+})
+
+//fetching Experiences by city_id
+router.get('/fetchByCity/experience-fetchByCity/:city_id', async(req, res) => {
+  const limit = 10
+  let city_id = req.params.city_id
+  if (!city_id ) {
+    debug.error("ERROR: No city_id found in Experience FetchByName  request!")
+    res.status(500).send("ERROR: No city_id found in Experience FetchByName  request!")
+  }
+  city_id = Number(city_id)
+  let city = await CityLib.findCityById(city_id)
+  if(city) {
+    let reply = await ExperienceLib.findTenRandomCityExperiences(city_id)
+    if (reply) {
+      if(reply.length < limit) {
+        let replyLength = limit - reply.length
+        let provinceExperience = await ExperienceLib.findExperiencesByProvince(city)
+        if(provinceExperience) {
+          provinceExperience = _.sample(provinceExperience, replyLength)
+          reply = reply.concat(provinceExperience)
+          if(reply.length < limit) {
+            replyLength = limit - reply.length
+            let experiences = await ExperienceLib.findRandomExperiences(city)
+            if(experiences) {
+              if (typeof experiences !== 'object') {
+                experiences = _.sample(experiences, replyLength)
+                reply = reply.concat(experiences)
+              } else {
+                reply.push(experiences)
+              }
+              console.log('3. Reply Length .........:   ', reply.length)
+              res.status(200).send(reply)
+            } else {
+              res.status(500).send('ERROR: No Experience Found Or Error Fetching Experiences!')
+            }
+          } else {
+            console.log('2. Reply Length .........:   ', reply.length)
+            res.status(200).send(reply)
+          }
+        }
+      } else {
+        console.log('1. Reply Length .........:   ', reply.length)
+        res.status(200).send(reply)
+      }
+    } else {
+      res.status(500).send('ERROR: No Experience Found Or Error Fetching Experience By City_id!')
+    }
+  } else {
+    res.status(500).send('ERROR: No Experience Found Or Error Fetching Experience By city_id!')
   }
 })
 
