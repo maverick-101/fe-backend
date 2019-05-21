@@ -8,6 +8,8 @@ const multer  = require('multer')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
 const checkAuth = require('../middleware/check-auth')
+const CityLib = require('../lib/CityLib')
+const _ = require('underscore')
 
 cloudinary.config({ 
   cloud_name: AppConfig.cloudinaryName, 
@@ -195,14 +197,54 @@ router.get('/fetchByName/packagePage-fetchByName/:name', async(req, res) => {
 
 //fetching packagePages by City_id
 router.get('/fetchByCity/packagePage-fetchByCity/:city_id', async(req, res) => {
+  const limit = 10
   let city_id = req.params.city_id
   if (!city_id ) {
     debug.error("ERROR: No name found in request!")
     res.status(500).send("ERROR: No name found in request!")
   }
-  let reply = await PackagePageLib.findPackagePageByCity_id(city_id)
-  if (reply) {
-    res.status(200).send(reply)
+  city_id = Number(city_id)
+  let city = await CityLib.findCityById(city_id)
+  if(city) {
+    let reply = await PackagePageLib.findTenRandomCityPackages(city_id)
+    if (reply) {
+      if(reply.length < limit) {
+        let replyLength = limit - reply.length
+        let provincePackage = await PackagePageLib.findPackagesByProvince(city)
+        if(provincePackage) {
+          if (typeof provincePackage !== 'object') {
+            provincePackage = _.sample(provincePackage, replyLength)
+            reply = reply.concat(provincePackage)
+          } else {
+            reply.push(provincePackage)
+          }
+          if(reply.length < limit) {
+            replyLength = limit - reply.length
+            let packages = await PackagePageLib.findRandomPackagePages(city)
+            if(packages) {
+              if (typeof packages !== 'object') {
+                packages = _.sample(packages, replyLength)
+                reply = reply.concat(packages)
+              } else {
+                reply.push(packages)
+              }
+              console.log('3. Reply Length .........:   ', reply.length)
+              res.status(200).send(reply)
+            } else {
+              res.status(500).send('ERROR: No Package Found Or Error Fetching Experiences!')
+            }
+          } else {
+            console.log('2. Reply Length .........:   ', reply.length)
+            res.status(200).send(reply)
+          }
+        }
+      } else {
+        console.log('1. Reply Length .........:   ', reply.length)
+        res.status(200).send(reply)
+      }
+    } else {
+      res.status(500).send('ERROR: No Package Found Or Error Fetching Package By City_id!')
+    }
   } else {
     res.status(500).send('ERROR: No packagePage Found Or Error Fetching packagePage By City_id!')
   }

@@ -9,6 +9,8 @@ const multer  = require('multer')
 const cloudinary = require('cloudinary')
 const cloudinaryStorage = require("multer-storage-cloudinary")
 const checkAuth = require('../middleware/check-auth')
+const CityLib = require('../lib/CityLib')
+const _ = require('underscore')
 
 cloudinary.config({ 
   cloud_name: AppConfig.cloudinaryName, 
@@ -133,14 +135,54 @@ router.get('/fetchById/event-fetchById/:Id', async(req, res) => {
 
 // fetching Events by city_id
 router.get('/fetchByCity/event-fetchByCity/:city_id', async(req, res) => {
+  const limit = 10
   let city_id = req.params.city_id
   if (!city_id) {
     debug.error("ERROR: No city_id found in Event fetchByCityId request!")
     res.status(500).send("ERROR: No city_id found in Event fetchByCityId request!")
   }
-  let reply = await EventLib.findEventByCity(city_id)
-  if (reply) {
-    res.status(200).send(reply)
+  city_id = Number(city_id)
+  let city = await CityLib.findCityById(city_id)
+  if(city) {
+    let reply = await EventLib.findTenRandomCityEvents(city_id)
+    if (reply) {
+      if(reply.length < limit) {
+        let replyLength = limit - reply.length
+        let provinceEvent = await EventLib.findEventsByProvince(city)
+        if(provinceEvent) {
+          if (typeof provinceEvent !== 'object') {
+            provinceEvent = _.sample(provinceEvent, replyLength)
+            reply = reply.concat(provinceEvent)
+          } else {
+            reply.push(provinceEvent)
+          }
+          if(reply.length < limit) {
+            replyLength = limit - reply.length
+            let events = await EventLib.findRandomEvents(city)
+            if(events) {
+              if (typeof events !== 'object') {
+                events = _.sample(events, replyLength)
+                reply = reply.concat(events)
+              } else {
+                reply.push(events)
+              }
+              console.log('3. Reply Length .........:   ', reply.length)
+              res.status(200).send(reply)
+            } else {
+              res.status(500).send('ERROR: No Event Found Or Error Fetching Experiences!')
+            }
+          } else {
+            console.log('2. Reply Length .........:   ', reply.length)
+            res.status(200).send(reply)
+          }
+        }
+      } else {
+        console.log('1. Reply Length .........:   ', reply.length)
+        res.status(200).send(reply)
+      }
+    } else {
+      res.status(500).send('ERROR: No Event Found Or Error Fetching Event By City_id!')
+    }
   } else {
     res.status(500).send('ERROR: No Event Found Or Error Fetching Event By city_id!')
   }
